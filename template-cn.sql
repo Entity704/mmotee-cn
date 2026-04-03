@@ -197,7 +197,7 @@ CREATE TABLE `tw_uClass` (
 
 LOCK TABLES `tw_uClass` WRITE;
 /*!40000 ALTER TABLE `tw_uClass` DISABLE KEYS */;
-INSERT INTO `tw_uClass` VALUES (1,'test',600,300,1000,400,1000,400,400,500,30,200,8,8);
+INSERT INTO `tw_uClass` VALUES (1,'test',600,300,1000,400,1000,400,400,500,30,200,8,8,0);
 /*!40000 ALTER TABLE `tw_uClass` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -399,7 +399,7 @@ INSERT INTO `tw_uItemList` VALUES
 (173,10,'大锤子','- 攻击范围增加100%'),
 (174,10,'穿透锤','- 让你的锤子无视地形');
 /*!40000 ALTER TABLE `tw_uItemList` ENABLE KEYS */;
-UNLOCK TABLES
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tw_uItemList_en`

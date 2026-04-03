@@ -1005,24 +1005,24 @@ void CCharacter::Tick()
 			switch (m_pPlayer->GetBotType())
 			{
 			case BOT_BOSSSLIME:
-				m_Health = 10+GameServer()->GetBossLeveling()*1000;
+				m_Health = 10+GameServer()->GetBossLeveling()*100;
 				break;
 			
 			case BOT_BOSSVAMPIRE:
-				m_Health = 10+GameServer()->GetBossLeveling()*1250;
+				m_Health = 10+GameServer()->GetBossLeveling()*650;
 				break;
 
 			case BOT_BOSSPIGKING:
-				m_Health = 10+GameServer()->GetBossLeveling()*200;
+				m_Health = 10+GameServer()->GetBossLeveling()*100;
 				break;
 
 			case BOT_BOSSGUARD:
-				m_Health = 10+GameServer()->GetBossLeveling()*1500;
+				m_Health = 10+GameServer()->GetBossLeveling()*600;
 				break;
 
 			case BOT_BOSSZOMBIE:
 			case BOT_BOSSSKELET:
-				m_Health = 10+GameServer()->GetBossLeveling()*2000;
+				m_Health = 10+GameServer()->GetBossLeveling()*200;
 				break;
 
 			default:
@@ -2044,7 +2044,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 							CreateDropRandom(MONEYBAG, random_int(50, 200), false, i, Force/(50+randforce));
 							CreateDropRandom(PIGPORNO, random_int(1, 3), false, i, Force/(35+randforce));
 							CreateDropRandom(WOOD, random_int(20, 30), 15, i, Force/(12+randforce));
-							GameServer()->m_apPlayers[From]->GiveUpPoint(int(10/BossCount));
+							GameServer()->m_apPlayers[From]->GiveUpPoint(int(1/BossCount));
 							GameServer()->UpdateStats(From);
 							break;
 

@@ -1009,13 +1009,13 @@ void CPlayer::TryRespawn()
 			if (GameServer()->m_CityStart == 1)
 			{
 				AccData()->m_Level = m_BigBot ? 700 + random_int(0, 3) : 350 + random_int(0, 3);
-				AccUpgrade()->m_Health = 100 + AccData()->m_Level * 2;
+				AccUpgrade()->m_Health = 50 + AccData()->m_Level * 1;
 				AccUpgrade()->m_Damage = AccData()->m_Level + 50;
 			}
 			else
 			{
 				AccData()->m_Level = m_BigBot ? 500 : 125 + random_int(0, 3);
-				AccUpgrade()->m_Health = 100 + AccData()->m_Level*2;
+				AccUpgrade()->m_Health = 50 + AccData()->m_Level*1;
 				AccUpgrade()->m_Damage = m_BigBot ? AccData()->m_Level*5 : AccData()->m_Level / 2;
 
 				if (m_BigBot)
@@ -1040,13 +1040,13 @@ void CPlayer::TryRespawn()
 			if (GameServer()->m_CityStart == 1)
 			{
 				AccData()->m_Level = m_BigBot ? 510 + random_int(0, 3) : 490 + random_int(0, 15);
-				AccUpgrade()->m_Health = 100 + (int)(AccData()->m_Level * 2);
+				AccUpgrade()->m_Health = 50 + (int)(AccData()->m_Level * 1);
 				AccUpgrade()->m_Damage = (int)(AccData()->m_Level + 50);
 			}
 			else
 			{
 				AccData()->m_Level = m_BigBot ? 800 + random_int(0, 3) : 200 + random_int(0, 3);
-				AccUpgrade()->m_Health = 100 + AccData()->m_Level;
+				AccUpgrade()->m_Health = 30 + AccData()->m_Level;
 				AccUpgrade()->m_Damage = m_BigBot ? AccData()->m_Level*50 : AccData()->m_Level;
 			}
 			break;
@@ -1217,7 +1217,14 @@ void CPlayer::ResetUpgrade(int ClientID)
 {
 	if (Server()->IsClientLogged(m_ClientID))
 	{
-		int Back = AccUpgrade()->m_Speed * 50 + AccUpgrade()->m_Health * 20 + AccUpgrade()->m_Damage * 50 + AccUpgrade()->m_HPRegen * 20 + AccUpgrade()->m_Mana * 10 + AccUpgrade()->m_AmmoRegen * 50 + AccUpgrade()->m_Ammo * 100 + AccUpgrade()->m_Spray * 100;
+		int Back = AccUpgrade()->m_Speed * 10
+			+ AccUpgrade()->m_Health * 20
+			+ AccUpgrade()->m_Damage * 10
+			+ AccUpgrade()->m_HPRegen * 20
+			+ AccUpgrade()->m_Mana * 10
+			+ AccUpgrade()->m_AmmoRegen * 10
+			+ AccUpgrade()->m_Ammo * 100
+			+ AccUpgrade()->m_Spray * 50;
 		AccUpgrade()->m_Speed = AccUpgrade()->m_Health = AccUpgrade()->m_Damage = AccUpgrade()->m_HPRegen = AccUpgrade()->m_Mana = 0;
 		AccUpgrade()->m_AmmoRegen = AccUpgrade()->m_Ammo = AccUpgrade()->m_Spray = 0;
 
