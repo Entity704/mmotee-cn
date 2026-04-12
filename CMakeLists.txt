@@ -157,7 +157,9 @@ if(NOT MSVC)
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-unused-parameter)
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-missing-field-initializers)
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wformat=2) # Warn about format strings.
-  add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-nullability-completeness) # Mac OS build on github
+  if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wno-nullability-completeness) # Mac OS build on github
+  endif()
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wduplicated-cond)
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wduplicated-branches)
   add_c_compiler_flag_if_supported(OUR_FLAGS_OWN -Wlogical-op)

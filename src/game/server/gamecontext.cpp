@@ -6000,7 +6000,7 @@ void CGameContext::UseItem(int ClientID, int ItemID, unsigned long long int Coun
 		long int PackOne = 0;
 		if (ItemID == MONEYBAG)
 		{
-			for (int i = 0; i < Count; i++)
+			for (size_t i = 0; i < Count; i++)
 			{
 				PackOne += random_int(0, 20000) + 5;
 				if (i == Count - 1)
@@ -6067,7 +6067,7 @@ void CGameContext::UseItem(int ClientID, int ItemID, unsigned long long int Coun
 		else if (ItemID == CLANBOXEXP)
 		{
 			if (!Server()->GetClanID(ClientID))
-				for (int i = 0; i < Count; i++)
+				for (size_t i = 0; i < Count; i++)
 				{
 					PackOne += random_int(0, 20000) + 5;
 					if (i == Count - 1)

@@ -1666,7 +1666,7 @@ int CServer::Run()
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
 		if(m_aClients[i].m_State != CClient::STATE_EMPTY)
-			m_NetServer.Drop(i, CLIENTDROPTYPE_SHUTDOWN, "服务器倒闭了");
+			m_NetServer.Drop(i, CLIENTDROPTYPE_SHUTDOWN, "服务器已关闭");
 	}
 
 	for (int i = 0; i < m_NumGameServer; i++)

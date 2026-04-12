@@ -2880,8 +2880,8 @@ void CCharacter::HandleMapZone_Bonus()
 				int Exp = 20+Server()->GetClan(Clan::ChairLevel, Server()->GetTopHouse(0));
 				int Money = 500+(Server()->GetClan(Clan::ChairLevel, Server()->GetTopHouse(0))*50);
 
-				unsigned long int LegalExp = m_pPlayer->AccData()->m_Exp + Exp;
-				int LegalMoney = m_pPlayer->AccData()->m_Money + Money;
+				uint64_t LegalExp = m_pPlayer->AccData()->m_Exp + static_cast<uint64_t>(Exp);
+				uint64_t LegalMoney = m_pPlayer->AccData()->m_Money + static_cast<uint64_t>(Money);
 
 				m_pPlayer->AccData()->m_Exp += Exp;
 				m_pPlayer->AccData()->m_Money += Money;
@@ -2903,8 +2903,8 @@ void CCharacter::HandleMapZone_Bonus()
 				int Exp = 20+Server()->GetClan(Clan::ChairLevel, Server()->GetTopHouse(1));
 				int Money = 500+(Server()->GetClan(Clan::ChairLevel, Server()->GetTopHouse(1))*50);
 
-				unsigned long int LegalExp = m_pPlayer->AccData()->m_Exp + Exp;
-				int LegalMoney = m_pPlayer->AccData()->m_Money + Money;
+				uint64_t LegalExp = m_pPlayer->AccData()->m_Exp + static_cast<uint64_t>(Exp);
+				uint64_t LegalMoney = m_pPlayer->AccData()->m_Money + static_cast<uint64_t>(Money);
 
 				m_pPlayer->AccData()->m_Exp += Exp;
 				m_pPlayer->AccData()->m_Money += Money;
@@ -2926,8 +2926,8 @@ void CCharacter::HandleMapZone_Bonus()
 				int Exp = 20+Server()->GetClan(Clan::ChairLevel, Server()->GetTopHouse(2));
 				int Money = 500+(Server()->GetClan(Clan::ChairLevel, Server()->GetTopHouse(2))*50);
 
-				unsigned long int LegalExp = m_pPlayer->AccData()->m_Exp + Exp;
-				int LegalMoney = m_pPlayer->AccData()->m_Money + Money;
+				uint64_t LegalExp = m_pPlayer->AccData()->m_Exp + static_cast<uint64_t>(Exp);
+				uint64_t LegalMoney = m_pPlayer->AccData()->m_Money + static_cast<uint64_t>(Money);
 
 				m_pPlayer->AccData()->m_Exp += Exp;
 				m_pPlayer->AccData()->m_Money += Money;
@@ -2951,8 +2951,8 @@ void CCharacter::HandleMapZone_Bonus()
 				int Exp = 20;
 				int Money = 600;
 
-				unsigned long int LegalExp = m_pPlayer->AccData()->m_Exp + Exp;
-				int LegalMoney = m_pPlayer->AccData()->m_Money + Money;
+				uint64_t LegalExp = m_pPlayer->AccData()->m_Exp + static_cast<uint64_t>(Exp);
+				uint64_t LegalMoney = m_pPlayer->AccData()->m_Money + static_cast<uint64_t>(Money);
 
 				if(GameServer()->m_CityStart == 1)
 				{
@@ -2989,13 +2989,13 @@ void CCharacter::HandleMapZone_Bonus()
 				int Exp = 30;
 				int Money = 800;
 
-				unsigned long int LegalExp = m_pPlayer->AccData()->m_Exp + Exp;
-				int LegalMoney = m_pPlayer->AccData()->m_Money + Money;
-			
+				uint64_t LegalExp = m_pPlayer->AccData()->m_Exp + static_cast<uint64_t>(Exp);
+				uint64_t LegalMoney = m_pPlayer->AccData()->m_Money + static_cast<uint64_t>(Money);
+
 				if(GameServer()->m_CityStart == 1)
 				{
 					m_pPlayer->AccData()->m_Exp += Exp;
-					m_pPlayer->AccData()->m_Money += Money;					
+					m_pPlayer->AccData()->m_Money += Money;
 					GameServer()->SendBroadcast_LChair(m_pPlayer->GetCID(), Exp, Money);
 				}
 				else

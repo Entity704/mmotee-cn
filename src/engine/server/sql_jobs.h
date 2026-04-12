@@ -652,10 +652,10 @@ public:
 
 	virtual bool Job(CSqlServer* pSqlServer)
 	{
-		char aBuf[256];			
+		char aBuf[256];	
 		try
 		{
-			str_format(aBuf, sizeof(aBuf), 
+			str_format(aBuf, sizeof(aBuf),
 				"SELECT item_count FROM %s_uItems "
 				"WHERE item_owner = '%d' AND il_id = '%d';",
 				pSqlServer->GetPrefix(),
@@ -666,26 +666,26 @@ public:
 			{
 				int Count = (int)pSqlServer->GetResults()->getInt("item_count");
 				m_pServer->m_stInv[m_ClientID][m_ItemID].i_count = Count;
-			
-				if(Count > m_Count)
+
+				if((unsigned long long)Count > m_Count)
 				{
-					str_format(aBuf, sizeof(aBuf), 
+					str_format(aBuf, sizeof(aBuf),
 						"UPDATE %s_uItems "
 						"SET item_count = item_count - '%d' "
 						"WHERE item_owner = '%d' AND il_id = '%d';"
 						, pSqlServer->GetPrefix()
 						, m_Count, m_pServer->m_aClients[m_ClientID].m_UserID, m_ItemID);
-					pSqlServer->executeSql(aBuf);	
+					pSqlServer->executeSql(aBuf);
 					m_pServer->m_stInv[m_ClientID][m_ItemID].i_count -= m_Count;
 				}
 				else
 				{
-					str_format(aBuf, sizeof(aBuf), 
-						"DELETE FROM %s_uItems " 
+					str_format(aBuf, sizeof(aBuf),
+						"DELETE FROM %s_uItems "
 						"WHERE item_owner = '%d' AND il_id = '%d';"
 						, pSqlServer->GetPrefix()
-						, m_pServer->m_aClients[m_ClientID].m_UserID, m_ItemID);	
-					pSqlServer->executeSql(aBuf);			
+						, m_pServer->m_aClients[m_ClientID].m_UserID, m_ItemID);
+					pSqlServer->executeSql(aBuf);
 					m_pServer->m_stInv[m_ClientID][m_ItemID].i_count = 0;
 					m_pServer->m_stInv[m_ClientID][m_ItemID].i_settings = 0;
 					m_pServer->m_aClients[m_ClientID].m_ItemCount[m_pServer->m_stInv[m_ClientID][m_ItemID].i_type]--;

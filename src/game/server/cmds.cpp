@@ -254,13 +254,13 @@ void CCmd::ChatCmd(CNetMsg_Cl_Say *Msg)
 		if ((sscanf(Msg->m_pMessage, "/sendmailall %d %d", &itemid, &citem)) != 2)
 			return GameServer()->SendChatTarget(ClientID, "命令方法: /sendmailall <物品id> <物品数量>");
 
-		if (0 < itemid < MAX_ITEM && citem > 0){
+		if (0 < itemid && itemid < MAX_ITEM && citem > 0){
 			for(int id = 0; id < MAX_PLAYERS; id++){
 				if(GameServer()->m_apPlayers[id] && GameServer()->Server()->IsClientLogged(id))
 					GameServer()->SendMail(id, 12, itemid, citem);
 			}
 		}
-		
+
 		char aBuf[128];
 		str_format(aBuf, sizeof(aBuf), "!警告! 管理员%s邮给全体玩家物品%sx%d个", GameServer()->Server()->ClientName(ClientID), GameServer()->Server()->GetItemName(ClientID, itemid), citem);
 		GameServer()->Server()->LogWarning(aBuf);
