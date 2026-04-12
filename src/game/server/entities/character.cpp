@@ -1007,7 +1007,7 @@ void CCharacter::Tick()
 			case BOT_BOSSSLIME:
 				m_Health = 10+GameServer()->GetBossLeveling()*100;
 				break;
-			
+
 			case BOT_BOSSVAMPIRE:
 				m_Health = 10+GameServer()->GetBossLeveling()*650;
 				break;
@@ -1021,8 +1021,11 @@ void CCharacter::Tick()
 				break;
 
 			case BOT_BOSSZOMBIE:
+				m_Health = 10+GameServer()->GetBossLeveling()*2000;
+                                break;
+
 			case BOT_BOSSSKELET:
-				m_Health = 10+GameServer()->GetBossLeveling()*200;
+				m_Health = 10+GameServer()->GetBossLeveling()*5000;
 				break;
 
 			default:
@@ -1031,7 +1034,7 @@ void CCharacter::Tick()
 
 			m_pPlayer->m_HealthStart = m_Health;
 		}
-		
+
 		// 生命值恢复
 		if(m_pPlayer->AccUpgrade()->m_HPRegen && m_pPlayer->m_Health < m_pPlayer->m_HealthStart)
 		{
@@ -1126,7 +1129,7 @@ void CCharacter::Tick()
 				TakeDamage(vec2(0.0f, 0.0f), 1, m_PoisonFrom, WEAPON_HAMMER, TAKEDAMAGEMODE_NOINFECTION);
 				GameServer()->SendEmoticon(m_pPlayer->GetCID(), EMOTICON_SORRY);
 			}
-			else 
+			else
 				m_Poison = 0;
 
 			if(m_Poison > 0)
@@ -1163,7 +1166,7 @@ void CCharacter::Tick()
 		m_Input.m_Hook = 0;
 	}
 	
-	m_pPlayer->m_Health = m_Health; 
+	m_pPlayer->m_Health = m_Health;
 	
 	UpdateTuningParam();
 
@@ -1404,7 +1407,7 @@ void CCharacter::TickPaused()
 		++m_aWeapons[m_ActiveWeapon].m_AmmoRegenStart;
 	if(m_EmoteStop > -1)
 		++m_EmoteStop;
-		
+
 	++m_HookDmgTick;
 }
 
@@ -1436,7 +1439,7 @@ bool CCharacter::IncreaseOverallHp(int Amount)
 	}
 	if(Amount > 0)
 	{
-		if (IncreaseArmor(Amount)) 
+		if (IncreaseArmor(Amount))
 			success = true;
 	}
 	return success;
@@ -1655,13 +1658,12 @@ int CCharacter::Unjail(int PlayerID) //手动救某人出监狱
 	
 	m_pPlayer->m_Search = false;
 	GameServer()->SendChatTarget_Localization(-1, CHATCATEGORY_HEALER, _("玩家 {str:name} 出监狱了!"), "name", Server()->ClientName(m_pPlayer->GetCID()), NULL);
-					
+	
 	m_pPlayer->AccData()->m_Jail = false;
 	m_pPlayer->AccData()->m_Rel = 0;
 	m_pPlayer->AccData()->m_IsJailed = false;
 	GameServer()->UpdateStats(m_pPlayer->GetCID());
 	return 0;
-	
 }
 
 
@@ -1675,12 +1677,12 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 	if(pFrom && pChr)
 	{
 		GameServer()->SendBroadcast_LStat(m_pPlayer->GetCID(), 106, 50, -1);
-		
+
 		// Боты
 		// 机器人
 		if(m_pPlayer->GetBotType() == BOT_NPCW || m_pPlayer->GetBotType() == BOT_FARMER)
-			return true; 
-	
+			return true;
+
 		// Антипвп в городе
 		// 城市中的 anti-PvP
 		if(pChr->m_AntiPVP || m_AntiPVP)
@@ -1705,7 +1707,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 			if((Server()->GetItemSettings(m_pPlayer->GetCID(), SANTIPVP) || Server()->GetItemSettings(From, SANTIPVP) || 
 				m_pPlayer->m_AntiPvpSmall) && !m_pPlayer->IsBot() && !pFrom->IsBot() && m_pPlayer->GetCID() != From)
 				return true;
-			
+
 			// Боссецкий
 			// (咱也布吉岛这是什么
 			if((pFrom->m_InBossed || (m_pPlayer->m_InBossed && m_pPlayer->GetCID() != From)) && !pFrom->IsBot() && !m_pPlayer->IsBot())
@@ -1715,13 +1717,13 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 			// 机器人不打机器人 (除了守卫)
 			if(pFrom->GetBotType() == m_pPlayer->GetBotType() && pFrom->GetBotType() >= 0)
 				return true;
-		
+
 			// Сокланы
 			// (咱也布吉岛这是什么
 			if(Server()->GetClanID(From) && Server()->GetClanID(m_pPlayer->GetCID()) == Server()->GetClanID(From)
 				&& m_pPlayer->GetCID() != From)
 				return true;
-				
+
 			// Агрессия
 			// 守卫愤怒值
 			if(m_pPlayer->GetBotType() == BOT_GUARD && !Server()->GetItemSettings(From, TITLECR))
@@ -1764,12 +1766,12 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 		else
 			return true;
 	}
-	
+
 	if(From == m_pPlayer->GetCID())
 		Dmg = max(1, Dmg/2);
 
 	m_DamageTaken++;
-	
+
 	if(From >= 0 && pFrom && pFrom->GetCharacter())
 	{
 		if(Server()->GetItemSettings(From, GUARDHAMMER) && Weapon == WEAPON_HAMMER)
@@ -1791,7 +1793,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 				else Freeze(1);
 			}
 		}
-		
+
 		if(m_pPlayer->AccData()->m_Class == PLAYERCLASS_HEALER && m_pPlayer->AccUpgrade()->m_Pasive2)
 		{
 			auto RandProc = (float)(100-m_pPlayer->AccUpgrade()->m_Pasive2*2);
@@ -1802,18 +1804,18 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 				return true;
 			}
 		}
-		
+
 		auto getcount = (float)(pFrom->AccData()->m_Class == PLAYERCLASS_ASSASSIN ? 15-pFrom->AccUpgrade()->m_HammerRange : 15.0f);
 		if(random_prob(1.0f/getcount))
 		{
 			int CritDamage = Dmg+pFrom->AccUpgrade()->m_Damage*2+random_int(0, 50);
 			if(pFrom->AccData()->m_Class == PLAYERCLASS_ASSASSIN)
 				CritDamage += (CritDamage/100)*pFrom->AccUpgrade()->m_Pasive2*3;
-			
+
 			Dmg = CritDamage;
 			if(pFrom->GetCharacter()->m_ActiveWeapon == WEAPON_SHOTGUN)
 				Dmg = (int)(CritDamage/2);
-			
+
 			if(Server()->GetItemSettings(From, TITLEDNTCRIT))
 				Dmg *= 50;
 
@@ -1825,7 +1827,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 			int DamageProc = Dmg+pFrom->AccUpgrade()->m_Damage;
 			if(pFrom->AccData()->m_Class == PLAYERCLASS_BERSERK)
 				DamageProc += (DamageProc/100)*pFrom->AccUpgrade()->m_Pasive2*3;
-			
+
 			Dmg = DamageProc;
 			if(pFrom->GetCharacter()->m_ActiveWeapon == WEAPON_SHOTGUN)
 				Dmg = (int)DamageProc/2;
@@ -1867,7 +1869,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 
 		if(From >= 0)
 			m_Health -= Dmg;
-			
+
 		// do damage Hit sound
 		if(From >= 0 && From != m_pPlayer->GetCID() && GameServer()->m_apPlayers[From])
 		{
@@ -1909,9 +1911,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 					int Count = min(10, (int) woodcore / 10 + 1);
 					CreateDropRandom(BIGWOOD, Count, 40, From, Force/(50+randforce));
 				}
-					
 			}
-				
 
 			if(m_pPlayer->GetBotType() == BOT_L1MONSTER)
 			{
@@ -1940,7 +1940,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 					CreateDropRandom(ZOMBIEEYE, 1, 40, From, Force/(50+randforce));
 				}
 			}
-		
+
 			if(pFrom && m_pPlayer->GetBotType() == BOT_L2MONSTER)
 			{
 				if(m_pPlayer->m_BigBot)
@@ -1954,7 +1954,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 						CreateDropRandom(KWAHGANDON, 1, false, From, Force/(50+randforce));
 					else
 						CreateDropRandom(DIRTYKWAHHEAD, 1, 20, From, Force/(50+randforce));
-					
+
 					if(random_prob(1.0f/44))
 						CreateDropRandom(FOOTKWAH, 1, false, From, Force/(50+randforce));
 					else
@@ -2017,7 +2017,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 
 						if(Server()->GetItemSettings(m_pPlayer->GetCID(), SCHAT) != 2) 
 							GameServer()->SendChatTarget_Localization(i, CHATCATEGORY_DEFAULT, _("玩家之间分享掉落的物品"), NULL);		
-						
+
 						switch (m_pPlayer->GetBotType())
 						{
 						case BOT_BOSSSLIME:
@@ -2030,7 +2030,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 							GameServer()->m_apPlayers[From]->GiveUpPoint(int(15/BossCount));
 							GameServer()->UpdateStats(From);
 							break;
-						
+
 						case BOT_BOSSVAMPIRE:
 							CreateDropRandom(MONEYBAG, 300+random_int(0, 200), false, i, Force/(50+randforce));
 							CreateDropRandom(BOOKEXPMIN, 1, 15, i, Force/(45+randforce));
@@ -2059,7 +2059,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 							break;
 
 						case BOT_BOSSZOMBIE:
-							CreateDropRandom(MONEYBAG, random_int(50, 100), false, i, Force/(50+randforce));
+							CreateDropRandom(MONEYBAG, random_int(500, 800), false, i, Force/(50+randforce));
 							CreateDropRandom(ZOMBIEEYE, random_int(3, 5), false, i, Force/(35+randforce));
 							CreateDropRandom(ZOMBIEBRAIN, 1, 40, From, Force/(50+randforce));
 							CreateDropRandom(DRAGONORE, random_int(20, 30), false, i, Force/(12+randforce));
@@ -2068,7 +2068,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 							break;
 
 						case BOT_BOSSSKELET:
-							CreateDropRandom(MONEYBAG, random_int(50, 100), false, i, Force/(50+randforce));
+							CreateDropRandom(MONEYBAG, random_int(500, 800), false, i, Force/(50+randforce));
 							CreateDropRandom(SKELETSBONE, random_int(3, 5), false, i, Force/(35+randforce));
 							CreateDropRandom(SKELETSKULL, random_int(1, 2), false, i, Force/(35+randforce));
 							CreateDropRandom(DRAGONORE, random_int(20, 30), false, i, Force/(12+randforce));
@@ -2079,7 +2079,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 						default:
 							break;
 						}
-					}  
+					}
 				}
 			}
 		}
@@ -2257,7 +2257,7 @@ void CCharacter::OpenClassChooser()
 	m_pPlayer->OpenMapMenu(1);
 }
 
-// 
+//
 int CCharacter::GetClass()
 {
 	if(m_pPlayer)
@@ -2268,23 +2268,23 @@ int CCharacter::GetClass()
 
 bool CCharacter::InCrafted()
 {
-	if(m_InCrafted) 
+	if(m_InCrafted)
 		return true;
-	
+
 	return false;
 }
 
 bool CCharacter::InQuest()
 {
-	if(m_InQuest) 
+	if(m_InQuest)
 		return true;
-	
+
 	return false;
 }
 
 // 空间属性
 void CCharacter::ClassSpawnAttributes()
-{			
+{
 	if(!Server()->GetItemSettings(m_pPlayer->GetCID(), SCHAT) && !Server()->IsClientLogged(GetPlayer()->GetCID()))
 		GameServer()->SendChatTarget_Localization(m_pPlayer->GetCID(), CHATCATEGORY_DEFAULT, _("注意!所有的设置项都在投票选项里面"), NULL);
 
@@ -2410,10 +2410,10 @@ void CCharacter::ClassSpawnAttributes()
 	// 按照弹夹数量添加弹药
 	if(Server()->GetItemCount(m_pPlayer->GetCID(), WEAPONPRESSED))
 		geta += Server()->GetItemCount(m_pPlayer->GetCID(), WEAPONPRESSED)*5;
-		
+
 	if(m_pPlayer->GetCharacter())
 	{
-		// 给boss武器 
+		// 给boss武器
 		if(m_pPlayer->IsBoss())
 		{
 			switch (m_pPlayer->GetBotType())
@@ -2433,35 +2433,35 @@ void CCharacter::ClassSpawnAttributes()
 				break;
 
 			case BOT_BOSSPIGKING:
-				Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 10000);	
+				Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 10000);
 				Server()->SetFireDelay(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 1000);
 				Server()->SetAmmoRegenTime(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 0);
 
 				Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_GUN, 15);
 				Server()->SetFireDelay(m_pPlayer->GetCID(), INFWEAPON_GUN, 1000);
 				Server()->SetAmmoRegenTime(m_pPlayer->GetCID(), INFWEAPON_GUN, 4000);
-	
+
 				GiveWeapon(WEAPON_HAMMER, 10000);
 				GiveWeapon(WEAPON_GUN, 15);
 			break;
 
 			case BOT_BOSSGUARD:
-				Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 10000);	
+				Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 10000);
 				Server()->SetFireDelay(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 1000);
 				Server()->SetAmmoRegenTime(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 0);
-	
+
 				GiveWeapon(WEAPON_HAMMER, 10000);
 				break;
-			
+
 			case BOT_BOSSZOMBIE:
 			case BOT_BOSSSKELET:
 				Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_RIFLE, 99999);
 				Server()->SetAmmoRegenTime(m_pPlayer->GetCID(), INFWEAPON_RIFLE, 10);
-				Server()->SetFireDelay(m_pPlayer->GetCID(), INFWEAPON_RIFLE, 3000);
+				Server()->SetFireDelay(m_pPlayer->GetCID(), INFWEAPON_RIFLE, 500);
 
 				GiveWeapon(WEAPON_RIFLE, -1);
 				break;
-			
+
 			default:
 				break;
 			}
@@ -2487,7 +2487,7 @@ void CCharacter::ClassSpawnAttributes()
 			new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 4, 1, true);
 	}
 	
-	Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 10000);	
+	Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 10000);
 	if(Server()->GetItemSettings(m_pPlayer->GetCID(), LAMPHAMMER)) Server()->SetFireDelay(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 1200);
 	else Server()->SetFireDelay(m_pPlayer->GetCID(), INFWEAPON_HAMMER, getsp);
 
