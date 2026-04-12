@@ -4049,7 +4049,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 		AddVoteMenu_Localization(ClientID, INVENTORY, MENUONLY, "☞ 物品栏/背包 ✪");
 		AddVoteMenu_Localization(ClientID, CRAFTING, MENUONLY, "☞ 合成栏 ☺");
 		AddVoteMenu_Localization(ClientID, QUESTMENU, MENUONLY, "☞ 任务与报酬 ⊹");
-		AddVoteMenu_Localization(ClientID, TRAVELMENU, MENUONLY, "☞ 旅行")
+		AddVoteMenu_Localization(ClientID, TRAVELMENU, MENUONLY, "☞ 旅行");
 
 		AddVote("······················· ", "null", ClientID);
 		AddVote_Localization(ClientID, "null", "✪ {str:psevdo}", "psevdo", LocalizeText(ClientID, "子菜单--设置"));
