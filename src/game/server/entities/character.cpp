@@ -2467,7 +2467,7 @@ void CCharacter::ClassSpawnAttributes()
 			}
 			return;
 		}
-		
+
 		// Рисовка артифактов
 		if(m_pPlayer->m_BigBot || Server()->GetItemCount(m_pPlayer->GetCID(), SNAPAMMOREGEN))
 		{
@@ -2480,13 +2480,14 @@ void CCharacter::ClassSpawnAttributes()
 
 		if(Server()->GetItemSettings(m_pPlayer->GetCID(), RAREEVENTHAMMER))
 			new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 3, 4, true);
-		else if(Server()->GetItemCount(m_pPlayer->GetCID(), SNAPDAMAGE))
+
+		if(Server()->GetItemCount(m_pPlayer->GetCID(), SNAPDAMAGE))
 			new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 3, WEAPON_GRENADE, true);
-			
+
 		if(Server()->GetItemCount(m_pPlayer->GetCID(), SNAPHANDLE))
 			new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 4, 1, true);
 	}
-	
+
 	Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 10000);
 	if(Server()->GetItemSettings(m_pPlayer->GetCID(), LAMPHAMMER)) Server()->SetFireDelay(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 1200);
 	else Server()->SetFireDelay(m_pPlayer->GetCID(), INFWEAPON_HAMMER, getsp);

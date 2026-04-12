@@ -10,7 +10,7 @@ CSnapFullProject::CSnapFullProject(CGameWorld *pGameWorld, vec2 Pos, int Owner, 
 	m_Pos = Pos;
 	m_LoadingTick = Server()->TickSpeed();
 	m_Owner = Owner;
-	
+
 	m_Num = clamp(Num, 0, (int)NUM_SIDE);
 	m_Type = Type;
 	m_Changing = Changing;
@@ -64,11 +64,19 @@ void CSnapFullProject::Snap(int SnappingClient)
 	float AngleStart = (2.0f * pi * Server()->Tick()/static_cast<float>(Server()->TickSpeed()))/10.0f;
 	float AngleStep = 2.0f * pi / CSnapFullProject::m_Num;
 	float R = 60.0f+m_LoadingTick;
+
+	if(m_Type == WEAPON_SHOTGUN)
+		AngleStart += pi / 4.0f;
+	else if(m_Type == WEAPON_GRENADE)
+		AngleStart += pi / 6.0f;
+	else if(m_Type == WEAPON_GUN)
+		AngleStart += pi / 8.0f;
+
 	AngleStart = AngleStart*2.0f;
 	for(int i=0; i<CSnapFullProject::m_Num; i++)
 	{
 		vec2 PosStart = m_Pos + vec2(R * cos(AngleStart + AngleStep*i), R * sin(AngleStart + AngleStep*i));
-		
+
 		CNetObj_Projectile *pObj = static_cast<CNetObj_Projectile *>(Server()->SnapNewItem(NETOBJTYPE_PROJECTILE, m_IDs[i], sizeof(CNetObj_Projectile)));
 		if(!pObj)
 			return;
