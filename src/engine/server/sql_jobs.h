@@ -11,7 +11,7 @@ class CGameServerCmd_AddLocalizeVote_Language : public CServer::CGameServerCmd
 private:
 	char m_aType[64];
 	char m_aText[128];
-	
+
 public:
 	CGameServerCmd_AddLocalizeVote_Language(int ClientID, const char* pType, const char* pText, ...)
 	{
@@ -30,7 +30,7 @@ class CGameServerCmd_SendChatMOTD : public CServer::CGameServerCmd
 {
 private:
 	char m_aText[512];
-	
+
 public:
 	CGameServerCmd_SendChatMOTD(int ClientID, const char* pText)
 	{
@@ -48,7 +48,7 @@ class CGameServerCmd_SendChatTarget : public CServer::CGameServerCmd
 {
 private:
 	char m_aText[128];
-	
+
 public:
 	CGameServerCmd_SendChatTarget(int ClientID, const char* pText)
 	{
@@ -88,7 +88,7 @@ private:
 	int m_ItemID;
 	unsigned long long int m_Count;
 	int m_Type;
-	
+
 public:
 	CGameServerCmd_UseItem(int ClientID, int ItemID, unsigned long long int Count, int Type)
 	{
@@ -97,7 +97,7 @@ public:
 		m_Count = Count;
 		m_Type = Type;
 	}
-	
+
 	virtual void Execute(IGameServer* pGameServer)
 	{
 		pGameServer->UseItem(m_ClientID, m_ItemID, m_Count, m_Type);
@@ -634,12 +634,12 @@ private:
 	int m_ClientID;
 	unsigned long long int m_Count;
 	int m_Type;
-	
+
 public:
 	CSqlJob_Server_RemItems(CServer* pServer, int ItemID, int ClientID, unsigned long long int Count, int Type)
 	{
 		m_pServer = pServer;
-		m_ItemID = ItemID; 
+		m_ItemID = ItemID;
 		m_ClientID = ClientID;
 		m_Count = Count;
 		m_Type = Type;
@@ -647,7 +647,7 @@ public:
 
 	virtual bool Job(CSqlServer* pSqlServer)
 	{
-		char aBuf[256];	
+		char aBuf[256];
 		try
 		{
 			str_format(aBuf, sizeof(aBuf),
@@ -686,7 +686,7 @@ public:
 					m_pServer->m_aClients[m_ClientID].m_ItemCount[m_pServer->m_stInv[m_ClientID][m_ItemID].i_type]--;
 				}
 
-				if(m_Count > Count)
+				if(m_Count > (unsigned long long)Count)
 					m_Count = Count;
 
 				CServer::CGameServerCmd* pCmd = new CGameServerCmd_UseItem(m_ClientID, m_ItemID, m_Count, m_Type);
