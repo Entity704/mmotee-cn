@@ -2116,62 +2116,62 @@ const char *CServer::GetClanName(int ClanID)
 		return "";
 }
 
-void CServer::ResetBotInfo(int ClientID, int BotType, int BotSubType, int CityStart)
+const char *CServer::GetBotName(int BotType, int BotSubType, int CityStart)
 {
 	switch (BotType)
 	{
 	case BOT_L1MONSTER:
 		if (!BotSubType)
-			str_copy(m_aClients[ClientID].m_aName, "Pig", MAX_NAME_LENGTH);
+			return "Pig";
 		else if (BotSubType == 1)
-			str_copy(m_aClients[ClientID].m_aName, "Zombie", MAX_NAME_LENGTH);
+			return "Zombie";
 		else // == 2
-			str_copy(m_aClients[ClientID].m_aName, "Doom", MAX_NAME_LENGTH);
+			return "Doom";
 		break;
 	case BOT_L2MONSTER:
 		if (!BotSubType)
-			str_copy(m_aClients[ClientID].m_aName, "Kwah", MAX_NAME_LENGTH);
+			return "Kwah";
 		else if (BotSubType == 1)
-			str_copy(m_aClients[ClientID].m_aName, "Skelet", MAX_NAME_LENGTH);
+			return "Skelet";
 		else // == 2
-			str_copy(m_aClients[ClientID].m_aName, "Skull", MAX_NAME_LENGTH);
+			return "Skull";
 		break;
 	case BOT_L3MONSTER:
 		if (!BotSubType)
-			str_copy(m_aClients[ClientID].m_aName, "Boom", MAX_NAME_LENGTH);
+			return "Boom";
 		else if (BotSubType == 1)
-			str_copy(m_aClients[ClientID].m_aName, "Nimfie", MAX_NAME_LENGTH);
+			return "Nimfie";
 		else // == 2
-			str_copy(m_aClients[ClientID].m_aName, "Devil", MAX_NAME_LENGTH);
+			return "Devil";
 		break;
 	case BOT_GUARD:
 		if (!BotSubType)
-			str_copy(m_aClients[ClientID].m_aName, "Guard", MAX_NAME_LENGTH);
+			return "Guard";
 		else if (BotSubType == 1)
-			str_copy(m_aClients[ClientID].m_aName, "Fighter", MAX_NAME_LENGTH);
+			return "Fighter";
 		else
-			str_copy(m_aClients[ClientID].m_aName, "Warden", MAX_NAME_LENGTH);
+			return "Warden";
 		break;
 	case BOT_BOSSSLIME:
-		str_copy(m_aClients[ClientID].m_aName, "Slime", MAX_NAME_LENGTH);
+		return "Slime";
 		break;
 	case BOT_BOSSVAMPIRE:
-		str_copy(m_aClients[ClientID].m_aName, "Vampire", MAX_NAME_LENGTH);
+		return "Vampire";
 		break;
 	case BOT_BOSSPIGKING:
-		str_copy(m_aClients[ClientID].m_aName, "BadPigges", MAX_NAME_LENGTH);
+		return "BadPigges";
 		break;
 	case BOT_BOSSGUARD:
-		str_copy(m_aClients[ClientID].m_aName, "Guard", MAX_NAME_LENGTH);
+		return "Guard";
 		break;
 	case BOT_BOSSZOMBIE:
-		str_copy(m_aClients[ClientID].m_aName, "Zombie", MAX_NAME_LENGTH);
+		return "Zombie";
 		break;
 	case BOT_BOSSSKELET:
-		str_copy(m_aClients[ClientID].m_aName, "Skelet", MAX_NAME_LENGTH);
+		return "Skelet";
 		break;
 	case BOT_FARMER:
-		str_copy(m_aClients[ClientID].m_aName, "Nesquik", MAX_NAME_LENGTH);
+		return "Nesquik";
 		break;
 	case BOT_NPCW:
 	{
@@ -2197,11 +2197,11 @@ void CServer::ResetBotInfo(int ClientID, int BotType, int BotSubType, int CitySt
 			else if (CityStart == 1)
 				Name = "NPC:Saki";
 		}
-		str_copy(m_aClients[ClientID].m_aName, Name, MAX_NAME_LENGTH);
+		return Name;
 		break;
 	}
 	default:
-		str_copy(m_aClients[ClientID].m_aName, "Keke", MAX_NAME_LENGTH);
+		return "Keke";
 		break;
 	}
 }

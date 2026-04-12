@@ -660,7 +660,7 @@ public:
 	virtual const char *AdminName(int ClanID) = 0;
 	virtual const char *GetClanName(int ClanID) = 0;
 
-	virtual void ResetBotInfo(int ClientID, int BotType, int BotSubType, int CityStart) = 0;
+	virtual const char *GetBotName(int BotType, int BotSubType, int CityStart) = 0;
 	virtual void InitClientBot(int ClientID, int MapID) = 0;
 
 	virtual int* GetIdMap(int ClientID) = 0;

@@ -755,7 +755,7 @@ void CPlayer::Snap(int SnappingClient)
 			switch (GetBotType())
 			{
 			default:
-				str_format(pSendName, sizeof(pSendName), "%d:%s[%d\%]", AccData()->m_Level, Server()->ClientName(m_ClientID), (int)getlv);
+				str_format(pSendName, sizeof(pSendName), "%d:%s[%d\%]", AccData()->m_Level, Server()->GetBotName(m_BotType, m_BotSubType, GameServer()->m_CityStart), (int)getlv);
 				break;
 			case BOT_GUARD:
 			case BOT_BOSSSLIME:
@@ -764,10 +764,10 @@ void CPlayer::Snap(int SnappingClient)
 			case BOT_BOSSGUARD:
 			case BOT_BOSSZOMBIE:
 			case BOT_BOSSSKELET:
-				str_format(pSendName, sizeof(pSendName), "%s[%d\%]", Server()->ClientName(m_ClientID), (int)getlv);
+				str_format(pSendName, sizeof(pSendName), "%s[%d\%]", Server()->GetBotName(m_BotType, m_BotSubType, GameServer()->m_CityStart), (int)getlv);
 				break;
 			case BOT_NPCW:
-				str_format(pSendName, sizeof(pSendName), "%s", Server()->ClientName(m_ClientID));
+				str_format(pSendName, sizeof(pSendName), "%s", Server()->GetBotName(m_BotType, m_BotSubType, GameServer()->m_CityStart));
 				break;
 			}
 			StrToInts(&pClientInfo->m_Name0, 4, pSendName);

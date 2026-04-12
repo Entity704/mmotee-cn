@@ -5902,7 +5902,6 @@ void CGameContext::UpdateBotInfo(int ClientID)
 		str_copy(NameSkin, "cammostripes", sizeof(NameSkin));
 	}
 
-	Server()->ResetBotInfo(ClientID, BotType, BotSubType, m_CityStart);
 	str_copy(m_apPlayers[ClientID]->m_TeeInfos.m_aSkinName, NameSkin, sizeof(m_apPlayers[ClientID]->m_TeeInfos.m_aSkinName));
 	m_apPlayers[ClientID]->m_TeeInfos.m_UseCustomColor = false;
 	m_pController->OnPlayerInfoChange(m_apPlayers[ClientID]);
