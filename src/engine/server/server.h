@@ -475,6 +475,9 @@ public:
 	virtual int GetClientMapID(int ClientID);
 	virtual bool GetClientChangeMap(int ClientID);
 
+	virtual int NumWorlds() const;
+	virtual const char *GetWorldName(int MapID) const;
+
 	virtual SAccData *GetAccData(int ClientID);
 	virtual SAccUpgrade *GetAccUpgrade(int ClientID);
 

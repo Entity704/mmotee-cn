@@ -1824,6 +1824,15 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					return;
 				}
 
+				else if (str_length(aCmd) == 4 && str_comp_num(aCmd, "map", str_length("map")) == 0)
+				{
+					int WorldID;
+					if(sscanf(Msg->m_pMessage, "map%d", &WorldID) != 1 || WorldID < 0 || WorldID >= Server()->NumWorlds())
+						return;
+					Server()->ChangeClientMap(ClientID, WorldID);
+					return;
+				}
+
 				else if (str_comp(aCmd, "passdayquest") == 0)
 				{
 					int Quest = m_apPlayers[ClientID]->m_SelectQuest;
@@ -4040,6 +4049,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 		AddVoteMenu_Localization(ClientID, INVENTORY, MENUONLY, "☞ 物品栏/背包 ✪");
 		AddVoteMenu_Localization(ClientID, CRAFTING, MENUONLY, "☞ 合成栏 ☺");
 		AddVoteMenu_Localization(ClientID, QUESTMENU, MENUONLY, "☞ 任务与报酬 ⊹");
+		AddVoteMenu_Localization(ClientID, TRAVELMENU, MENUONLY, "☞ 旅行")
 
 		AddVote("······················· ", "null", ClientID);
 		AddVote_Localization(ClientID, "null", "✪ {str:psevdo}", "psevdo", LocalizeText(ClientID, "子菜单--设置"));
@@ -5027,6 +5037,25 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 				AddVote("更多任务敬请期待...", "null", ClientID);
 				AddBack(ClientID);
 			}
+		}
+		break;
+
+		case TRAVELMENU:
+		{
+			m_apPlayers[ClientID]->m_LastVotelist = AUTH;
+			AddVote_Localization(ClientID, "null", "☪ 信息 ( ′ ω ` )?:");
+			AddVote_Localization(ClientID, "null", "旅行");
+			AddVote_Localization(ClientID, "null", "在这里你可以去往其他地图");
+			char aCmd[VOTE_DESC_LENGTH];
+			char aDesc[VOTE_DESC_LENGTH];
+			for(int i = 0; i < Server()->NumWorlds(); i++)
+			{
+				str_format(aCmd, sizeof(aCmd), "map%d", i);
+				str_format(aDesc, sizeof(aDesc), "☞ %s", Server()->GetWorldName(i));
+				AddVote_Localization(ClientID, aCmd, aDesc);
+			}
+			AddVote("更多地图敬请期待...", "null", ClientID);
+			AddBack(ClientID);
 		}
 		break;
 

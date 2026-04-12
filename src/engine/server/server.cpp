@@ -1428,9 +1428,9 @@ int CServer::Run()
 {
 	m_PrintCBIndex = Console()->RegisterPrintCallback(g_Config.m_ConsoleOutputLevel, SendRconLineAuthed, this);
 
-	/* read file data into buffer
+	// read file data into buffer
 	char aFileBuf[512];
-	str_format(aFileBuf, sizeof(aFileBuf), "maps.json");
+	str_format(aFileBuf, sizeof(aFileBuf), "maps/index.json");
 	const IOHANDLE File = m_pStorage->OpenFile(aFileBuf, IOFLAG_READ, IStorage::TYPE_ALL);
 	if(!File)
 	{
@@ -1463,9 +1463,7 @@ int CServer::Run()
 	}
 
 	// clean up
-	json_value_free(pJsonData);*/
-	
-	LoadMap(g_Config.m_SvMap);
+	json_value_free(pJsonData);
 
 	// start server
 	NETADDR BindAddr;
@@ -2205,7 +2203,7 @@ void CServer::InitClientBot(int ClientID, int MapID)
 		return;
 		
 	m_aClients[ClientID].m_State = CServer::CClient::STATE_INGAME;
-	//m_aClients[ClientID].m_MapID = MapID;
+	m_aClients[ClientID].m_MapID = MapID;
 }
 
 int CServer::GetClientAntiPing(int ClientID)
@@ -2458,6 +2456,19 @@ bool CServer::GetClientChangeMap(int CID)
 		return false;
 
 	return m_aClients[CID].m_IsChangeMap && m_aClients[CID].m_State >= CClient::STATE_CONNECTING && m_aClients[CID].m_State < CClient::STATE_INGAME;
+}
+
+int CServer::NumWorlds() const
+{
+    return (int) m_vMapData.size();
+}
+
+const char *CServer::GetWorldName(int MapID) const
+{
+	if(MapID < 0 || MapID >= NumWorlds())
+		return "(null)";
+
+    return m_vMapData[MapID].m_aCurrentMap;
 }
 
 SAccData *CServer::GetAccData(int ClientID)

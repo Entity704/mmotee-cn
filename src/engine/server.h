@@ -76,6 +76,7 @@ enum Menus
 	LABOURDAY,
 	GETUP,
 	QUESTMENU,
+	TRAVELMENU,
 	DAYQUEST,
 	MAXMENU,
 
@@ -671,6 +672,9 @@ public:
 	virtual void ChangeClientMap(int CID, int MapID) = 0;
 	virtual int GetClientMapID(int ClientID) = 0;
 	virtual bool GetClientChangeMap(int ClientID) = 0;
+
+	virtual int NumWorlds() const = 0;
+	virtual const char *GetWorldName(int MapID) const = 0;
 
 	virtual SAccData *GetAccData(int ClientID) = 0;
 	virtual SAccUpgrade *GetAccUpgrade(int ClientID) = 0;
