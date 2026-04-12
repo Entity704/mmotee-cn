@@ -977,78 +977,51 @@ void CPlayer::TryRespawn()
 		case BOT_L1MONSTER:
 			m_pCharacter = new (AllocMemoryCell) CMonster(&GameServer()->m_World);
 
-			if (GameServer()->m_CityStart == 1)
+			AccData()->m_Level = (m_BigBot ? 400 + random_int(0, 3) : 5) + m_BotSubType * 250;
+			AccUpgrade()->m_Health = m_BigBot ? AccData()->m_Level*3 : 0;
+			if (m_BigBot)
 			{
-				AccData()->m_Level = m_BigBot ? 600 + random_int(0, 3) : 250;
-				AccUpgrade()->m_Health = 100 + AccData()->m_Level * 20;
-				AccUpgrade()->m_Damage = AccData()->m_Level + 50;
-			}
-			else
-			{
-				AccData()->m_Level = m_BigBot ? 400 + random_int(0, 3) : 5;
-				AccUpgrade()->m_Health = m_BigBot ? AccData()->m_Level*3 : 0;
-				if (m_BigBot)
-				{
-					Server()->SetMaxAmmo(m_ClientID, INFWEAPON_GUN, 10);
-					Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_GUN, 100);
-					Server()->SetFireDelay(m_ClientID, INFWEAPON_GUN, 800);
+				Server()->SetMaxAmmo(m_ClientID, INFWEAPON_GUN, 10);
+				Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_GUN, 100);
+				Server()->SetFireDelay(m_ClientID, INFWEAPON_GUN, 800);
 
-					Server()->SetMaxAmmo(m_ClientID, INFWEAPON_SHOTGUN, 10);
-					Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_SHOTGUN, 100);
-					Server()->SetFireDelay(m_ClientID, INFWEAPON_SHOTGUN, 800);
+				Server()->SetMaxAmmo(m_ClientID, INFWEAPON_SHOTGUN, 10);
+				Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_SHOTGUN, 100);
+				Server()->SetFireDelay(m_ClientID, INFWEAPON_SHOTGUN, 800);
 
-					Server()->SetMaxAmmo(m_ClientID, INFWEAPON_GRENADE, 10);
-					Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_GRENADE, 100);
-					Server()->SetFireDelay(m_ClientID, INFWEAPON_GRENADE, 800);
-				}
+				Server()->SetMaxAmmo(m_ClientID, INFWEAPON_GRENADE, 10);
+				Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_GRENADE, 100);
+				Server()->SetFireDelay(m_ClientID, INFWEAPON_GRENADE, 800);
 			}
 			break;
 		case BOT_L2MONSTER:
 			m_pCharacter = new (AllocMemoryCell) CKwah(&GameServer()->m_World);
 
-			if (GameServer()->m_CityStart == 1)
+			AccData()->m_Level = (m_BigBot ? 500 : 125 + random_int(0, 3)) + m_BotSubType * 300;
+			AccUpgrade()->m_Health = 50 + AccData()->m_Level*1;
+			AccUpgrade()->m_Damage = m_BigBot ? AccData()->m_Level*5 : AccData()->m_Level / 2;
+
+			if (m_BigBot)
 			{
-				AccData()->m_Level = m_BigBot ? 700 + random_int(0, 3) : 350 + random_int(0, 3);
-				AccUpgrade()->m_Health = 50 + AccData()->m_Level * 1;
-				AccUpgrade()->m_Damage = AccData()->m_Level + 50;
-			}
-			else
-			{
-				AccData()->m_Level = m_BigBot ? 500 : 125 + random_int(0, 3);
-				AccUpgrade()->m_Health = 50 + AccData()->m_Level*1;
-				AccUpgrade()->m_Damage = m_BigBot ? AccData()->m_Level*5 : AccData()->m_Level / 2;
+				Server()->SetMaxAmmo(m_ClientID, INFWEAPON_GUN, 10);
+				Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_GUN, 100);
+				Server()->SetFireDelay(m_ClientID, INFWEAPON_GUN, 800);
 
-				if (m_BigBot)
-				{
-					Server()->SetMaxAmmo(m_ClientID, INFWEAPON_GUN, 10);
-					Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_GUN, 100);
-					Server()->SetFireDelay(m_ClientID, INFWEAPON_GUN, 800);
+				Server()->SetMaxAmmo(m_ClientID, INFWEAPON_SHOTGUN, 10);
+				Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_SHOTGUN, 100);
+				Server()->SetFireDelay(m_ClientID, INFWEAPON_SHOTGUN, 800);
 
-					Server()->SetMaxAmmo(m_ClientID, INFWEAPON_SHOTGUN, 10);
-					Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_SHOTGUN, 100);
-					Server()->SetFireDelay(m_ClientID, INFWEAPON_SHOTGUN, 800);
-
-					Server()->SetMaxAmmo(m_ClientID, INFWEAPON_GRENADE, 10);
-					Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_GRENADE, 100);
-					Server()->SetFireDelay(m_ClientID, INFWEAPON_GRENADE, 800);
-				}
+				Server()->SetMaxAmmo(m_ClientID, INFWEAPON_GRENADE, 10);
+				Server()->SetAmmoRegenTime(m_ClientID, INFWEAPON_GRENADE, 100);
+				Server()->SetFireDelay(m_ClientID, INFWEAPON_GRENADE, 800);
 			}
 			break;
 		case BOT_L3MONSTER:
 			m_pCharacter = new (AllocMemoryCell) CBoomer(&GameServer()->m_World);
 
-			if (GameServer()->m_CityStart == 1)
-			{
-				AccData()->m_Level = m_BigBot ? 510 + random_int(0, 3) : 490 + random_int(0, 15);
-				AccUpgrade()->m_Health = 50 + (int)(AccData()->m_Level * 1);
-				AccUpgrade()->m_Damage = (int)(AccData()->m_Level + 50);
-			}
-			else
-			{
-				AccData()->m_Level = m_BigBot ? 800 + random_int(0, 3) : 200 + random_int(0, 3);
-				AccUpgrade()->m_Health = 30 + AccData()->m_Level;
-				AccUpgrade()->m_Damage = m_BigBot ? AccData()->m_Level*50 : AccData()->m_Level;
-			}
+			AccData()->m_Level = (m_BigBot ? 800 + random_int(0, 3) : 200 + random_int(0, 3)) + m_BotSubType * 400;
+			AccUpgrade()->m_Health = 30 + AccData()->m_Level;
+			AccUpgrade()->m_Damage = m_BigBot ? AccData()->m_Level*50 : AccData()->m_Level;
 			break;
 		case BOT_BOSSSLIME:
 			m_pCharacter = new (AllocMemoryCell) CBossSlime(&GameServer()->m_World);
