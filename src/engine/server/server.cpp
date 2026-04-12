@@ -1451,6 +1451,7 @@ int CServer::Run()
 	free(pFileData);
 	if(pJsonData == nullptr)
 	{
+		dbg_msg("Maps", "json load error: %s", aError);
 		return false;
 	}
 
