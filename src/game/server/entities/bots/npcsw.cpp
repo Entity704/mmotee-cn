@@ -30,6 +30,8 @@ CNpcWSold::CNpcWSold(CGameWorld *pWorld)
 
 void CNpcWSold::Tick()
 {
+	if(!m_pPlayer || !IsAlive()) // bugfix
+		return;
 	TickBotAI();
 	CCharacter::Tick();
 }
