@@ -1824,10 +1824,10 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					return;
 				}
 
-				else if (str_length(aCmd) == 4 && str_comp_num(aCmd, "map", str_length("map")) == 0)
+				else if (str_comp_num(aCmd, "map", str_length("map")) == 0)
 				{
 					int WorldID;
-					if(sscanf(Msg->m_pMessage, "map%d", &WorldID) != 1 || WorldID < 0 || WorldID >= Server()->NumWorlds())
+					if(sscanf(aCmd, "map%d", &WorldID) != 1 || WorldID < 0 || WorldID >= Server()->NumWorlds())
 						return;
 					Server()->ChangeClientMap(ClientID, WorldID);
 					return;
