@@ -1142,6 +1142,7 @@ void CGameContext::OnClientEnter(int ClientID)
 	// world.insert_entity(&players[client_id]);
 	m_apPlayers[ClientID]->m_IsInGame = true;
 	m_apPlayers[ClientID]->Respawn();
+	m_apPlayers[ClientID]->UpdateSnap();
 
 	ResetVotes(ClientID, NOAUTH);
 	Server()->FirstInit(ClientID);

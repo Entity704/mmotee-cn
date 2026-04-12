@@ -62,8 +62,6 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, int Team)
 	SetLanguage("cn");
 
 	InitSnap();
-	if(GetMapID() != 0)
-		UpdateSnap();
 }
 
 CPlayer::~CPlayer()
