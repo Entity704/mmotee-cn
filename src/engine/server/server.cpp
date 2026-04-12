@@ -783,7 +783,7 @@ void CServer::Logout(int ClientID)
 void CServer::SendMap(int ClientID, int MapID)
 {
 	CMsgPacker Msg(NETMSG_MAP_CHANGE);
-	Msg.AddString(GetMapName(), 0);
+	Msg.AddString(m_vMapData[MapID].m_aCurrentMap, 0);
 	Msg.AddInt(m_vMapData[MapID].m_CurrentMapCrc);
 	Msg.AddInt(m_vMapData[MapID].m_CurrentMapSize);
 	SendMsgEx(&Msg, MSGFLAG_VITAL|MSGFLAG_FLUSH, ClientID, true, MapID);

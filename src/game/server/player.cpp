@@ -62,6 +62,8 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, int Team)
 	SetLanguage("cn");
 
 	InitSnap();
+	if(GetMapID() != 0)
+		UpdateSnap();
 }
 
 CPlayer::~CPlayer()
@@ -1000,7 +1002,7 @@ void CPlayer::TryRespawn()
 			m_pCharacter = new (AllocMemoryCell) CKwah(&GameServer()->m_World);
 
 			AccData()->m_Level = (m_BigBot ? 500 : 125 + random_int(0, 3)) + m_BotSubType * 300;
-			AccUpgrade()->m_Health = 50 + AccData()->m_Level*1;
+			AccUpgrade()->m_Health = AccData()->m_Level*2;
 			AccUpgrade()->m_Damage = m_BigBot ? AccData()->m_Level*5 : AccData()->m_Level / 2;
 
 			if (m_BigBot)
@@ -1022,7 +1024,7 @@ void CPlayer::TryRespawn()
 			m_pCharacter = new (AllocMemoryCell) CBoomer(&GameServer()->m_World);
 
 			AccData()->m_Level = (m_BigBot ? 800 + random_int(0, 3) : 200 + random_int(0, 3)) + m_BotSubType * 400;
-			AccUpgrade()->m_Health = 30 + AccData()->m_Level;
+			AccUpgrade()->m_Health = AccData()->m_Level * 2;
 			AccUpgrade()->m_Damage = m_BigBot ? AccData()->m_Level*50 : AccData()->m_Level;
 			break;
 		case BOT_BOSSSLIME:
