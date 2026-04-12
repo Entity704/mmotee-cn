@@ -1396,7 +1396,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					Buffer.append("\n\n");
 					Server()->Localization()->Format_L(Buffer, pLanguage, _("主要制作人员:\n原作者们:Najvlad, Rem1x, Matodor, Kurosio"), NULL);
 					Buffer.append("\n\n");
-					Server()->Localization()->Format_L(Buffer, pLanguage, _("地图修改：天际, 卖鱼强, Ninecloud, Flower\n开发者: 天上的星星, Flower, Ninecloud\n服务器管理: Flower, 籽抽, 王小睿"), NULL);
+					Server()->Localization()->Format_L(Buffer, pLanguage, _("地图修改：天际, 卖鱼强, Ninecloud, Flower\n开发者: 天上的星星, Flower, Ninecloud, Bamcane, EntityMC\n服务器管理: 是（“是”是人名）, EntityMC"), NULL);
 					Buffer.append("\n\n");
 
 					SendMOTD(ClientID, Buffer.buffer());
@@ -4049,7 +4049,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 		AddVoteMenu_Localization(ClientID, INVENTORY, MENUONLY, "☞ 物品栏/背包 ✪");
 		AddVoteMenu_Localization(ClientID, CRAFTING, MENUONLY, "☞ 合成栏 ☺");
 		AddVoteMenu_Localization(ClientID, QUESTMENU, MENUONLY, "☞ 任务与报酬 ⊹");
-		AddVoteMenu_Localization(ClientID, TRAVELMENU, MENUONLY, "☞ 旅行");
+		AddVoteMenu_Localization(ClientID, TRAVELMENU, MENUONLY, "☞ 旅行 ✈");
 
 		AddVote("······················· ", "null", ClientID);
 		AddVote_Localization(ClientID, "null", "✪ {str:psevdo}", "psevdo", LocalizeText(ClientID, "子菜单--设置"));
@@ -4118,11 +4118,13 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 				CreateNewShop(ClientID, LAMPHAMMER, 3, 160, 50000);
 
 				// #################### СКИЛЫ
+				/*
 				int ExtendLimitPrice;
 				ExtendLimitPrice = 10000 * pow(Server()->GetItemCount(ClientID, EXTENDLIMIT), 2);
+				*/
 				AddVote("············", "null", ClientID);
 				AddVote_Localization(ClientID, "null", "ღ  {str:psevdo}", "psevdo", LocalizeText(ClientID, "提升"));
-				CreateNewShop(ClientID, EXTENDLIMIT, 2, 200, 100000); // ExtendLimitPrice);
+				CreateNewShop(ClientID, EXTENDLIMIT, 2, 200, 100000);
 
 				// #################### ПЕРСОНАЛЬНО
 
@@ -5044,7 +5046,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 		{
 			m_apPlayers[ClientID]->m_LastVotelist = AUTH;
 			AddVote_Localization(ClientID, "null", "☪ 信息 ( ′ ω ` )?:");
-			AddVote_Localization(ClientID, "null", "旅行");
+			AddVote_Localization(ClientID, "null", "旅行!");
 			AddVote_Localization(ClientID, "null", "在这里你可以去往其他地图");
 			char aCmd[VOTE_DESC_LENGTH];
 			char aDesc[VOTE_DESC_LENGTH];
