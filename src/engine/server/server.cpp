@@ -2125,24 +2125,32 @@ void CServer::ResetBotInfo(int ClientID, int BotType, int BotSubType, int CitySt
 			str_copy(m_aClients[ClientID].m_aName, "Pig", MAX_NAME_LENGTH);
 		else if (BotSubType == 1)
 			str_copy(m_aClients[ClientID].m_aName, "Zombie", MAX_NAME_LENGTH);
+		else // == 2
+			str_copy(m_aClients[ClientID].m_aName, "Doom", MAX_NAME_LENGTH);
 		break;
 	case BOT_L2MONSTER:
 		if (!BotSubType)
 			str_copy(m_aClients[ClientID].m_aName, "Kwah", MAX_NAME_LENGTH);
 		else if (BotSubType == 1)
 			str_copy(m_aClients[ClientID].m_aName, "Skelet", MAX_NAME_LENGTH);
+		else // == 2
+			str_copy(m_aClients[ClientID].m_aName, "Skull", MAX_NAME_LENGTH);
 		break;
 	case BOT_L3MONSTER:
 		if (!BotSubType)
 			str_copy(m_aClients[ClientID].m_aName, "Boom", MAX_NAME_LENGTH);
 		else if (BotSubType == 1)
 			str_copy(m_aClients[ClientID].m_aName, "Nimfie", MAX_NAME_LENGTH);
+		else // == 2
+			str_copy(m_aClients[ClientID].m_aName, "Devil", MAX_NAME_LENGTH);
 		break;
 	case BOT_GUARD:
 		if (!BotSubType)
 			str_copy(m_aClients[ClientID].m_aName, "Guard", MAX_NAME_LENGTH);
 		else if (BotSubType == 1)
 			str_copy(m_aClients[ClientID].m_aName, "Fighter", MAX_NAME_LENGTH);
+		else
+			str_copy(m_aClients[ClientID].m_aName, "Warden", MAX_NAME_LENGTH);
 		break;
 	case BOT_BOSSSLIME:
 		str_copy(m_aClients[ClientID].m_aName, "Slime", MAX_NAME_LENGTH);
