@@ -8,7 +8,7 @@
 #include "../character.h"
 #include "../projectile.h"
 
-MACRO_ALLOC_POOL_ID_IMPL(CBossCleaner, MAX_CLIENTS)
+MACRO_ALLOC_POOL_ID_IMPL(CBossCleaner, MAX_CLIENTS * ENGINE_MAX_MAPS + MAX_CLIENTS)
 
 CBossCleaner::CBossCleaner(CGameWorld *pWorld)
 	: CCharacter(pWorld)

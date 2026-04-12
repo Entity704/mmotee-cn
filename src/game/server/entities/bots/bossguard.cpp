@@ -8,7 +8,7 @@
 #include "../character.h"
 #include "../projectile.h"
 
-MACRO_ALLOC_POOL_ID_IMPL(CBossGuard, MAX_CLIENTS)
+MACRO_ALLOC_POOL_ID_IMPL(CBossGuard, MAX_CLIENTS * ENGINE_MAX_MAPS + MAX_CLIENTS)
 
 CBossGuard::CBossGuard(CGameWorld *pWorld)
 	: CCharacter(pWorld)

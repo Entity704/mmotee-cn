@@ -9,7 +9,7 @@
 #include "../character.h"
 #include "../projectile.h"
 
-MACRO_ALLOC_POOL_ID_IMPL(CNpcWSold, MAX_CLIENTS)
+MACRO_ALLOC_POOL_ID_IMPL(CNpcWSold, MAX_CLIENTS * ENGINE_MAX_MAPS + MAX_CLIENTS)
 
 CNpcWSold::CNpcWSold(CGameWorld *pWorld)
 : CCharacter(pWorld)

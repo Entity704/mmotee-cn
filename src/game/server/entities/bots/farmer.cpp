@@ -9,7 +9,7 @@
 #include "../character.h"
 #include "../projectile.h"
 
-MACRO_ALLOC_POOL_ID_IMPL(CNpcFarmer, MAX_CLIENTS)
+MACRO_ALLOC_POOL_ID_IMPL(CNpcFarmer, MAX_CLIENTS * ENGINE_MAX_MAPS + MAX_CLIENTS)
 
 CNpcFarmer::CNpcFarmer(CGameWorld *pWorld)
 : CCharacter(pWorld)
