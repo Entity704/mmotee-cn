@@ -2204,7 +2204,7 @@ void CServer::InitClientBot(int ClientID, int MapID)
 		return;
 		
 	m_aClients[ClientID].m_State = CServer::CClient::STATE_INGAME;
-	m_aClients[ClientID].m_MapID = MapID;
+	// m_aClients[ClientID].m_MapID = MapID;
 }
 
 int CServer::GetClientAntiPing(int ClientID)

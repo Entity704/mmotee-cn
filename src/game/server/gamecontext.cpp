@@ -5928,7 +5928,7 @@ void CGameContext::CreateBot(int ClientID, int BotType, int BotSubType)
 	m_apPlayers[BotClientID]->SetBotType(BotType);
 	m_apPlayers[BotClientID]->SetBotSubType(BotSubType);
 	m_apPlayers[BotClientID]->m_MapID = m_MapID;
-	Server()->InitClientBot(BotClientID, -1);
+	Server()->InitClientBot(BotClientID, m_MapID);
 }
 
 void CGameContext::DeleteBotBoss() { Server()->Kick(BOSSID, "pizdyi"); }
