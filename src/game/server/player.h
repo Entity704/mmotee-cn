@@ -185,8 +185,11 @@ public:
 	bool GetSnap(int EntityID);
 	void SetSnap(int EntityID, bool Snap);
 
-	SAccData *AccData() { return Server()->GetAccData(GetCID()); };
-	SAccUpgrade *AccUpgrade() { return Server()->GetAccUpgrade(GetCID()); };
+	SAccData m_BotAccData;
+	SAccUpgrade m_BotAccUpgrade;
+
+	SAccData *AccData() { return IsBot() ? &m_BotAccData : Server()->GetAccData(GetCID()); };
+	SAccUpgrade *AccUpgrade() { return IsBot() ? &m_BotAccUpgrade : Server()->GetAccUpgrade(GetCID()); };
 
 	int m_MapID;
 

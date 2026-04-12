@@ -37,6 +37,8 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, int Team)
 
 	m_Bot = (ClientID >= g_Config.m_SvMaxClients - MAX_BOTS);
 	m_BotType = m_BotSubType = m_SelectItem = m_SelectArmor = m_SelectQuest = m_SelectSubQuest = -1;
+	mem_zero(&m_BotAccData, sizeof(m_BotAccData));
+	mem_zero(&m_BotAccUpgrade, sizeof(m_BotAccUpgrade));
 
 	m_Authed = IServer::AUTHED_NO;
 	int *pIdMap = Server()->GetIdMap(m_ClientID);
