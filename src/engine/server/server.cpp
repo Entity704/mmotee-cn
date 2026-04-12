@@ -1613,7 +1613,7 @@ int CServer::Run()
 					lock_wait(m_GameServerCmdLock);
 					for(int i=0; i<m_lGameServerCmds.size(); i++)
 					{
-						m_lGameServerCmds[i]->Execute(GameServer());
+						m_lGameServerCmds[i]->Execute(GameServer(m_aClients[m_lGameServerCmds[i]->GetClientID()].m_MapID));
 						delete m_lGameServerCmds[i];
 					}
 					m_lGameServerCmds.clear();

@@ -448,9 +448,12 @@ public:
 public:
 	class CGameServerCmd
 	{
+	protected:
+		int m_ClientID;
 	public:
 		virtual ~CGameServerCmd() {};
 		virtual void Execute(IGameServer* pGameServer) = 0;
+		int GetClientID() const { return m_ClientID; }
 	};
 	array<CGameServerCmd*> m_lGameServerCmds;
 	LOCK m_GameServerCmdLock;

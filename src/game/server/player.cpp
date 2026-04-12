@@ -980,7 +980,7 @@ void CPlayer::TryRespawn()
 			m_pCharacter = new (AllocMemoryCell) CMonster(&GameServer()->m_World);
 
 			AccData()->m_Level = (m_BigBot ? 400 + random_int(0, 3) : 5) + m_BotSubType * 250;
-			AccUpgrade()->m_Health = m_BigBot ? AccData()->m_Level*3 : 0;
+			AccUpgrade()->m_Health = m_BigBot ? AccData()->m_Level*3 : AccData()->m_Level / 3;
 			if (m_BigBot)
 			{
 				Server()->SetMaxAmmo(m_ClientID, INFWEAPON_GUN, 10);

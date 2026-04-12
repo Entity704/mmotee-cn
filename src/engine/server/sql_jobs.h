@@ -9,7 +9,6 @@
 class CGameServerCmd_AddLocalizeVote_Language : public CServer::CGameServerCmd
 {
 private:
-	int m_ClientID;
 	char m_aType[64];
 	char m_aText[128];
 	
@@ -30,7 +29,6 @@ public:
 class CGameServerCmd_SendChatMOTD : public CServer::CGameServerCmd
 {
 private:
-	int m_ClientID;
 	char m_aText[512];
 	
 public:
@@ -49,7 +47,6 @@ public:
 class CGameServerCmd_SendChatTarget : public CServer::CGameServerCmd
 {
 private:
-	int m_ClientID;
 	char m_aText[128];
 	
 public:
@@ -68,7 +65,6 @@ public:
 class CGameServerCmd_SendChatTarget_Language : public CServer::CGameServerCmd
 {
 private:
-	int m_ClientID;
 	int m_ChatCategory;
 	char m_aText[128];
 	
@@ -89,7 +85,6 @@ public:
 class CGameServerCmd_UseItem : public CServer::CGameServerCmd
 {
 private:
-	int m_ClientID;
 	int m_ItemID;
 	unsigned long long int m_Count;
 	int m_Type;
