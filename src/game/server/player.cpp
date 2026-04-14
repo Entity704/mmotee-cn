@@ -17,6 +17,10 @@
 #include <game/server/entities/bots/farmer.h>
 #include <game/server/entities/bots/bosszombie-skelet.h>
 
+#include <map>
+#include <string>
+#include <vector>
+
 MACRO_ALLOC_POOL_ID_IMPL(CPlayer, MAX_CLIENTS * ENGINE_MAX_MAPS + MAX_CLIENTS)
 
 IServer *CPlayer::Server() const { return m_pGameServer->Server(); }
