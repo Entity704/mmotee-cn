@@ -97,153 +97,93 @@ bool CPlayer::GetBoss()
 	return false;
 }
 
-/*
-Rand Craft Box 概率：
-95% 中的 50% 为 Body Boomer，50% 为 Foot Kwah
-5% 中，耳环蓝图、戒指蓝图、武器蓝图、Rare Slime Dirt各占 25%
-*/
 void CPlayer::RandomBoxTick()
 {
-	if (m_OpenBox && m_OpenBoxType == RANDOMCRAFTITEM)
-	{
-		int getitem = 0;
-		if (m_OpenBox % 30 == 0)
-		{
-			if (random_prob(0.95f))
-			{
-				getitem = random_prob(0.5f) ? FOOTKWAH : HEADBOOMER;
-			}
-			else
-			{
-				switch (random_int(0, 3))
-				{
-				case 0:
-					getitem = FORMULAFORRING;
-					break;
-				case 1:
-					getitem = FORMULAWEAPON;
-					break;
-				case 2:
-					getitem = RARESLIMEDIRT;
-					break;
-				default:
-					getitem = FORMULAEARRINGS;
-					break;
-				}
-			}
-			if (m_pCharacter)
-				GameServer()->CreateLolText(m_pCharacter, false, vec2(0, -75), vec2(0, -1), 10, Server()->GetItemName_en(getitem));
-
-			if (m_OpenBox == 30)
-			{
-				m_OpenBox = 0;
-				m_OpenBoxType = 0;
-
-				if (m_pCharacter)
-					GameServer()->CreateDeath(m_pCharacter->m_Pos, m_ClientID);
-
-				GameServer()->GiveItem(m_ClientID, getitem, m_OpenBoxAmount);
-				GameServer()->SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, _("{str:name} 使用了物品:{str:used} x{int:num} 而且获得了 {str:get} x{int:num2}"),
-														  "name", Server()->ClientName(m_ClientID), "used", Server()->GetItemName(m_ClientID, RANDOMCRAFTITEM, false), "num", &m_OpenBoxAmount, "get", Server()->GetItemName(m_ClientID, getitem, false), "num2", &m_OpenBoxAmount, NULL);
-				m_OpenBoxAmount = 0;
-			}
-		}
-	}
-	/*
-	Event Box 概率：
-	79/80 概率为钱袋
-	1/80 概率为 Rare Event Hammer
-	*/
-	if (m_OpenBox && m_OpenBoxType == EVENTBOX)
-	{
-		int getitem = 0;
-		if (m_OpenBox % 30 == 0)
-		{
-			getitem = random_prob(0.995f) ? MONEYBAG : RAREEVENTHAMMER;
-
-			if (m_pCharacter)
-				GameServer()->CreateLolText(m_pCharacter, false, vec2(0, -75), vec2(0, -1), 10, Server()->GetItemName_en(getitem));
-
-			if (m_OpenBox == 30)
-			{
-				m_OpenBox = 0;
-				m_OpenBoxType = 0;
-
-				if (m_pCharacter)
-					GameServer()->CreateDeath(m_pCharacter->m_Pos, m_ClientID);
-
-				GameServer()->GiveItem(m_ClientID, getitem, m_OpenBoxAmount);
-				GameServer()->SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, _("{str:name} 使用了物品:{str:used} x{int:num} 而且获得了 {str:get} x{int:num2}"),
-														  "name", Server()->ClientName(m_ClientID), "used", Server()->GetItemName(m_ClientID, EVENTBOX, false), "num", &m_OpenBoxAmount, "get", Server()->GetItemName(m_ClientID, getitem, false), "num2", &m_OpenBoxAmount, NULL);
-				m_OpenBoxAmount = 0;
-			}
-		}
-	}
-	/*
-	Farming Box 概率：
-	92% 中，5 个种地经验值，2 个钱袋，5 个 Event Box 各占三分之一
-	剩下 8% 中，Jump Impuls 占 50%,Rare Freeazer 和 Rare Slime Dirt 各占 25%
-	*/
-	if (m_OpenBox && m_OpenBoxType == FARMBOX)
-	{
-		int getitem = 0;
-		if (m_OpenBox % 30 == 0)
-		{
-			int Get = 1;
-			if (random_prob(0.92f))
-			{
-				switch (random_int(0, 2))
-				{
-				case 0:
-					getitem = FARMLEVEL;
-					Get = 5 * m_OpenBoxAmount;
-					break;
-				case 1:
-					getitem = MONEYBAG;
-					Get = 2 * m_OpenBoxAmount;
-					break;
-				default:
-					getitem = EVENTBOX;
-					Get = 5 * m_OpenBoxAmount;
-					break;
-				}
-			}
-			else
-			{
-				switch (random_int(0, 3))
-				{
-				case 1:
-					getitem = JUMPIMPULS;
-					break;
-				case 2:
-					getitem = RARESLIMEDIRT;
-					break;
-				default:
-					getitem = FREEAZER;
-					break;
-				}
-				Get = m_OpenBoxAmount;
-			}
-			if (m_pCharacter)
-				GameServer()->CreateLolText(m_pCharacter, false, vec2(0, -75), vec2(0, -1), 10, Server()->GetItemName_en(getitem));
-
-			if (m_OpenBox == 30)
-			{
-				m_OpenBox = 0;
-				m_OpenBoxType = 0;
-
-				if (m_pCharacter)
-					GameServer()->CreateDeath(m_pCharacter->m_Pos, m_ClientID);
-
-				GameServer()->GiveItem(m_ClientID, getitem, Get);
-				GameServer()->SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, _("{str:name} 使用了物品:{str:used} x{int:num} 而且获得了 {str:get} x{int:num2}"),
-														  "name", Server()->ClientName(m_ClientID), "used", Server()->GetItemName(m_ClientID, FARMBOX, false), "num", &m_OpenBoxAmount, "get", Server()->GetItemName(m_ClientID, getitem, false), "num2", &Get, NULL);
-				m_OpenBoxAmount = 0;
-			}
-		}
-	}
-	if (m_OpenBox)
-		m_OpenBox--;
+        if (!m_OpenBox || m_OpenBoxType == 0)
+                return;
+        if (m_OpenBox % 30 == 0)
+        {
+                std::map<int, int> Results;
+                for (int i = 0; i < m_OpenBoxAmount; ++i)
+                {
+                        int getitem = 0;
+                        int count = 1;
+                        if (m_OpenBoxType == RANDOMCRAFTITEM)
+                        {
+                                if (random_prob(0.95f))
+                                        getitem = random_prob(0.5f) ? FOOTKWAH : HEADBOOMER;
+                                else
+                                {
+                                        switch (random_int(0, 3)) {
+                                                case 0: getitem = FORMULAFORRING; break;
+                                                case 1: getitem = FORMULAWEAPON; break;
+                                                case 2: getitem = RARESLIMEDIRT; break;
+                                                default: getitem = FORMULAEARRINGS; break;
+                                        }
+                                }
+                        }
+                        else if (m_OpenBoxType == EVENTBOX)
+                        {
+                                getitem = random_prob(299.0f/300.0f) ? MONEYBAG : RAREEVENTHAMMER;
+                        }
+                        else if (m_OpenBoxType == FARMBOX)
+                        {
+                                if (random_prob(0.97f))
+                                {
+                                        switch (random_int(0, 2)) {
+                                                case 0: getitem = FARMLEVEL; count = 5; break;
+                                                case 1: getitem = MONEYBAG;  count = 2; break;
+                                                default: getitem = EVENTBOX; count = 5; break;
+                                        }
+                                }
+                                else
+                                {
+                                        switch (random_int(0, 3)) {
+                                                case 1: getitem = JUMPIMPULS; break;
+                                                case 2: getitem = RARESLIMEDIRT; break;
+                                                default: getitem = FREEAZER; break;
+                                        }
+                                }
+                        }
+                        if (getitem > 0)
+                                Results[getitem] += count;
+                }
+                if (m_pCharacter && !Results.empty())
+                {
+                        int DisplayItem = Results.begin()->first;
+                        GameServer()->CreateLolText(m_pCharacter, false, vec2(0, -75), vec2(0, -1), 10, Server()->GetItemName_en(DisplayItem));
+                }
+                if (m_OpenBox == 30)
+                {
+                        if (m_pCharacter)
+                                GameServer()->CreateDeath(m_pCharacter->m_Pos, m_ClientID);
+                        std::string ItemsSummary = "";
+                        for (auto it = Results.begin(); it != Results.end(); ++it)
+                        {
+                                auto [itemID, totalAmount] = *it;
+                                GameServer()->GiveItem(m_ClientID, itemID, totalAmount);
+                                ItemsSummary += Server()->GetItemName(m_ClientID, itemID, false);
+                                ItemsSummary += " x" + std::to_string(totalAmount);
+                                if (std::next(it) != Results.end())
+                                        ItemsSummary += ", ";
+                                if (m_pCharacter)
+                                        GameServer()->CreateLolText(m_pCharacter, false, vec2(0, -75), vec2(0, -1), 10, Server()->GetItemName_en(itemID));
+                        }
+                        GameServer()->SendChatTarget_World(-1, CHATCATEGORY_DEFAULT,
+                                _("{str:name} 使 用 了 物 品 :{str:used} x{int:num} 而 且 获 得 了  {str:get}"),
+                                "name", Server()->ClientName(m_ClientID),
+                                "used", Server()->GetItemName(m_ClientID,
+m_OpenBoxType, false),
+                                "num", &m_OpenBoxAmount,
+                                "get", ItemsSummary.c_str(),
+                                NULL);
+                        m_OpenBox = 0;
+                        m_OpenBoxType = 0;
+                        m_OpenBoxAmount = 0;
+                }
+        }
+        if (m_OpenBox > 0)
+                m_OpenBox--;
 }
 
 void CPlayer::BasicAuthedTick()
