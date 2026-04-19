@@ -2027,7 +2027,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 							CreateDropRandom(FORMULAEARRINGS, 1, 90, i, Force/(35+randforce));
 							CreateDropRandom(FORMULAWEAPON, 1, 90, i, Force/(40+randforce));
 							CreateDropRandom(RANDOMCRAFTITEM, 1, 15, i, Force/(45+randforce));
-							GameServer()->m_apPlayers[From]->GiveUpPoint(int(15/BossCount));
+							GameServer()->m_apPlayers[From]->GiveUpPoint(int(2/BossCount));
 							GameServer()->UpdateStats(From);
 							break;
 
@@ -2036,7 +2036,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 							CreateDropRandom(BOOKEXPMIN, 1, 15, i, Force/(45+randforce));
 							CreateDropRandom(BOOKMONEYMIN, 1, 80, i, Force/(45+randforce));
 							CreateDropRandom(CLANBOXEXP, 1, 50, i, Force/(45+randforce));
-							GameServer()->m_apPlayers[From]->GiveUpPoint(int(20/BossCount));
+							GameServer()->m_apPlayers[From]->GiveUpPoint(int(3/BossCount));
 							GameServer()->UpdateStats(From);
 							break;
 
@@ -2054,7 +2054,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 							CreateDropRandom(GUARDHEAD, 5, false, i, Force/(35+randforce));
 							CreateDropRandom(DIRTYGUARDHEAD, 10, false, i, Force/(35+randforce)	);
 							CreateDropRandom(GUARDHAMFRAG, random_int(1, 4), 25, i, Force/(12+randforce));
-							GameServer()->m_apPlayers[From]->GiveUpPoint(int(15/BossCount));
+							GameServer()->m_apPlayers[From]->GiveUpPoint(int(4/BossCount));
 							GameServer()->UpdateStats(From);
 							break;
 
@@ -2063,7 +2063,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 							CreateDropRandom(ZOMBIEEYE, random_int(3, 5), false, i, Force/(35+randforce));
 							CreateDropRandom(ZOMBIEBRAIN, 1, 40, From, Force/(50+randforce));
 							CreateDropRandom(DRAGONORE, random_int(20, 30), false, i, Force/(12+randforce));
-							GameServer()->m_apPlayers[From]->GiveUpPoint(int(25/BossCount));
+							GameServer()->m_apPlayers[From]->GiveUpPoint(int(10/BossCount));
 							GameServer()->UpdateStats(From);
 							break;
 
@@ -2072,7 +2072,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 							CreateDropRandom(SKELETSBONE, random_int(3, 5), false, i, Force/(35+randforce));
 							CreateDropRandom(SKELETSKULL, random_int(1, 2), false, i, Force/(35+randforce));
 							CreateDropRandom(DRAGONORE, random_int(20, 30), false, i, Force/(12+randforce));
-							GameServer()->m_apPlayers[From]->GiveUpPoint(int(30/BossCount));
+							GameServer()->m_apPlayers[From]->GiveUpPoint(int(15/BossCount));
 							GameServer()->UpdateStats(From);
 							break;
 

@@ -1841,7 +1841,10 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					int Get = GetDailyQuestUpgr(Quest, Sub);
 					int Item = GetDailyQuestItem(Quest, Sub);
 					int Need = GetDailyQuestNeed(Quest, Sub);
-					
+
+					// if(m_apPlayers[ClientID])
+					// 	return SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("你已经完成了任务！（大声）"), NULL);
+
 					switch (Quest)
 					{
 					case EDailyQuests::QUESTTYPE1_COLLECT:
@@ -2658,6 +2661,14 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 
 					m_apPlayers[ClientID]->m_SelectItem = -1;
 					ResetVotes(ClientID, AUTH);
+					return;
+				}
+
+				else if (str_comp(aCmd, "traceitem") == 0)
+				{
+					SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("该功能尚未完成~"), NULL);
+					ResetVotes(ClientID, AUTH);
+					m_apPlayers[ClientID]->m_SelectItem = -1;
 					return;
 				}
 
@@ -4876,6 +4887,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 				AddVote("", "null", ClientID);
 			}
 			AddVote_Localization(ClientID, "destitem", "▹ 摧毁物品 ㄟ( ▔, ▔ )ㄏ ");
+			AddVote_Localization(ClientID, "traceitem", "▹ 追踪该物品");
 			AddBack(ClientID);
 			return;
 		}
@@ -6570,7 +6582,7 @@ int CGameContext::GetDailyQuestNeed(int Quest, int SubType)
 
 		case EDailyQuests::COLLECT4:
 			return (RandomNumber%23 + 8) * 100000;
-		
+
 		default:
 			break;
 		}
@@ -6593,7 +6605,8 @@ int CGameContext::GetDailyQuestNeed(int Quest, int SubType)
 			return (RandomNumber%23 + 8) * 10000000;
 
 		case EDailyQuests::CHALLENGE4:
-			return (RandomNumber%23 + 19) * 4000;
+			return 7000;
+			// return (RandomNumber%23 + 19) * 4000;
 
 		default:
 			break;
