@@ -117,6 +117,7 @@ public:
 	bool m_FinishedChallengeQuest;
 
 	int m_TracingItemId;
+	int m_TracingItemGoalCount;
 
 	// TODO: clean this up
 	struct
