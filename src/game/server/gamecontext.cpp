@@ -695,12 +695,12 @@ void CGameContext::SendBroadcast_LStat(int To, int Priority, int LifeSpan, int T
 	int O2 = Server()->GetItemCount(To, MOONO2);
 	char TracingItemInfo[32];
 	str_format(
-		TracingItemInfo, sizeof(TracingItemInfo), "%d 个 %s",
-		m_pServer->GetItemCount(To, m_apPlayers[To]->m_TracingItemId),
-		m_pServer->GetItemName(To, m_apPlayers[To]->m_TracingItemId)
+		TracingItemInfo, sizeof(TracingItemInfo), "%s x%d",
+		m_pServer->GetItemName(To, m_apPlayers[To]->m_TracingItemId),
+		m_pServer->GetItemCount(To, m_apPlayers[To]->m_TracingItemId)
 	);
 
-	SendBroadcast_Localization(To, Priority, LifeSpan, _(" \n\n等级: {int:lvl} | 经验: {int:exp}/{int:expl}\n----------------------\n{str:sdata} {int:getl}%\n{str:dataang} 怒气\n----------------------\n{str:mana} 魔能\n生命值: {int:hp}/{int:hpstart}\n氧气: {int:o2}\n追踪物品: {str:tiinfo}\n\n\n\n\n\n\n\n\n{str:buff}{str:emp}"),
+	SendBroadcast_Localization(To, Priority, LifeSpan, _(" \n\n等级: {int:lvl} | 经验: {int:exp}/{int:expl}\n----------------------\n{str:sdata} {int:getl}%\n{str:dataang} 怒气\n----------------------\n{str:mana} 魔能\n生命值: {int:hp}/{int:hpstart}\n氧气: {int:o2}\n\n追踪物品: {str:tiinfo}\n\n\n\n\n\n\n\n\n{str:buff}{str:emp}"),
 							   "lvl", &m_apPlayers[To]->AccData()->m_Level,
 							   "exp", &m_apPlayers[To]->AccData()->m_Exp,
 							   "expl", &Optmem,
