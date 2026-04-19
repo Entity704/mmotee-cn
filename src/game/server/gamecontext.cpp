@@ -697,7 +697,7 @@ void CGameContext::SendBroadcast_LStat(int To, int Priority, int LifeSpan, int T
 	int TracingItemCount = m_pServer->GetItemCount(To, m_apPlayers[To]->m_TracingItemId);
 	int GoalCount = m_apPlayers[To]->m_TracingItemGoalCount;
 	char TracingItemInfo[64];
-	const char *ProgressBar = GoalCount ? LevelString(100, (int)((GoalCount * 100.0) / TracingItemCount), 10, '=', ' ') : "";
+	const char *ProgressBar = GoalCount ? LevelString(100, (int)((TracingItemCount * 100.0) / GoalCount), 10, '=', ' ') : "";
 	str_format(
 		TracingItemInfo, sizeof(TracingItemInfo), "\n %s\n %d/%d\n %s",
 		m_pServer->GetItemName(To, m_apPlayers[To]->m_TracingItemId),
