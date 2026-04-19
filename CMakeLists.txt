@@ -383,7 +383,7 @@ file(COPY ${COPY_FILES} DESTINATION .)
 ########################################################################
 function(chash output_file)
   add_custom_command(OUTPUT ${output_file}
-    COMMAND ${Python3_EXECUTABLE} scripts/cmd5.py ${ARGN}
+    COMMAND ${Python_EXECUTABLE} scripts/cmd5.py ${ARGN}
       > "${PROJECT_BINARY_DIR}/${output_file}"
     DEPENDS scripts/cmd5.py ${ARGN}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -392,7 +392,7 @@ endfunction()
 
 function(generate_source output_file script_parameter)
   add_custom_command(OUTPUT ${output_file}
-    COMMAND ${Python3_EXECUTABLE} datasrc/compile.py ${script_parameter}
+    COMMAND ${Python_EXECUTABLE} datasrc/compile.py ${script_parameter}
       > "${PROJECT_BINARY_DIR}/${output_file}"
     DEPENDS
       datasrc/compile.py
@@ -405,7 +405,7 @@ endfunction()
 
 function(generate_source7 output_file script_parameter)
   add_custom_command(OUTPUT ${output_file}
-    COMMAND ${Python3_EXECUTABLE} -m datasrc.seven.compile ${script_parameter}
+    COMMAND ${Python_EXECUTABLE} -m datasrc.seven.compile ${script_parameter}
       > "${PROJECT_BINARY_DIR}/${output_file}"
     DEPENDS
       datasrc/seven/compile.py
@@ -418,7 +418,7 @@ endfunction()
 
 function(generate_maps output_file)
   add_custom_command(OUTPUT ${output_file}
-    COMMAND ${Python3_EXECUTABLE} datasrc/crosscompile.py
+    COMMAND ${Python_EXECUTABLE} datasrc/crosscompile.py
       > "${PROJECT_BINARY_DIR}/${output_file}"
     DEPENDS
       datasrc/compile.py
@@ -448,7 +448,7 @@ if(NOT PROJECT_GIT_DIR_ERROR)
   )
 endif()
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/src/game/generated/git_revision.cpp
-  COMMAND ${Python3_EXECUTABLE}
+  COMMAND ${Python_EXECUTABLE}
     scripts/git_revision.py
     > ${PROJECT_BINARY_DIR}/src/game/generated/git_revision.cpp
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
