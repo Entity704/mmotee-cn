@@ -34,7 +34,7 @@ public:
 	void PostTick();
 	void Snap(int SnappingClient);
 	void FakeSnap(int SnappingClient);
-	
+
 	const char* TitleGot();
 
 	void OnDirectInput(CNetObj_PlayerInput *NewInput);
@@ -87,7 +87,7 @@ public:
 	int m_SortedSelectCraft;
 	bool m_Search;
 	int m_JailTick;
-	
+
 	char m_aSelectPlayer[64];
 	int m_SelectItem;
 	int m_SelectItemType;
@@ -112,6 +112,10 @@ public:
 	int m_LastKill;
 	int m_AngryWroth;
 
+	bool m_FinishedCollectQuest;
+	bool m_FinishedKillQuest;
+	bool m_FinishedChallengeQuest;
+
 	// TODO: clean this up
 	struct
 	{
@@ -127,7 +131,7 @@ public:
 	int m_LastActionTick;
 	int m_SpecTick;
 
-	bool m_StolenSkin;	
+	bool m_StolenSkin;
 	struct
 	{
 		int m_TargetX;

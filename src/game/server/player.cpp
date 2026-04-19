@@ -62,6 +62,10 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, int Team)
 	m_MoneyAdd = m_ExperienceAdd = m_aInviteClanID = m_Mana = 0;
 	m_Search = m_BigBot = m_InArea = m_IsInGame = m_InBossed = false;
 
+	m_FinishedCollectQuest = false;
+	m_FinishedKillQuest = false;
+	m_FinishedChallengeQuest = false;
+
 	m_pChatCmd = new CCmd(this, m_pGameServer);
 	SetLanguage("cn");
 

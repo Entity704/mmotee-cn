@@ -1842,13 +1842,13 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					int Item = GetDailyQuestItem(Quest, Sub);
 					int Need = GetDailyQuestNeed(Quest, Sub);
 
-					// if(m_apPlayers[ClientID])
-					// 	return SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("你已经完成了任务！（大声）"), NULL);
-
 					switch (Quest)
 					{
 					case EDailyQuests::QUESTTYPE1_COLLECT:
 					{
+						if(m_apPlayers[ClientID]->m_FinishedCollectQuest)
+							return SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("你滴任务，完成啦！(大声)"), NULL);
+
 						if (Server()->GetItemCount(ClientID, Item) < (static_cast<unsigned long long>(Need)))
 							return SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("任务还未完成!"), NULL);
 						else
@@ -1856,24 +1856,32 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 							Server()->RemItem(ClientID, Item, Need, -1);
 							m_apPlayers[ClientID]->GiveUpPoint(Get);
 							Server()->SetItemSettingsCount(ClientID, COLLECTQUEST, GetDailyID());
+							m_apPlayers[ClientID]->m_FinishedCollectQuest = true;
 						}
 						break;
 					}
 
 					case EDailyQuests::QUESTTYPE2_KILL:
 					{
+						if(m_apPlayers[ClientID]->m_FinishedKillQuest)
+							return SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("你滴任务，完成啦！(大声)"), NULL);
+
 						if (Server()->GetItemCount(ClientID, KILLQUEST) < (static_cast<unsigned long long>(Need)))
 							return SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("任务还未完成!"), NULL);
 						else
 						{
 							m_apPlayers[ClientID]->GiveUpPoint(Get);
 							Server()->SetItemSettingsCount(ClientID, KILLQUEST, GetDailyID());
+							m_apPlayers[ClientID]->m_FinishedKillQuest = true;
 						}
 						break;
 					}
 
 					case EDailyQuests::QUESTTYPE3_CHALLENGE:
 					{
+						if(m_apPlayers[ClientID]->m_FinishedChallengeQuest)
+							return SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("你滴任务，完成啦！(大声)"), NULL);
+
 						if(Sub == EDailyQuests::CHALLENGE4)
 						{
 							if (Server()->GetItemCount(ClientID, CHALLENGEQUEST) < (static_cast<unsigned long long>(Need)))
@@ -1889,6 +1897,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 
 						m_apPlayers[ClientID]->GiveUpPoint(Get);
 						Server()->SetItemSettingsCount(ClientID, CHALLENGEQUEST, GetDailyID());
+						m_apPlayers[ClientID]->m_FinishedChallengeQuest = true;
 						break;
 					}
 
@@ -6334,7 +6343,7 @@ const char *CGameContext::GetBotName(int BotType)
 	case BOT_L1MONSTER:
 		return "猪";
 		break;
-	
+
 	case BOT_L2MONSTER:
 		return "Kwah";
 		break;
@@ -6354,11 +6363,11 @@ const char *CGameContext::GetBotName(int BotType)
 	case BOT_BOSSPIGKING:
 		return "捣蛋猪";
 		break;
-	
+
 	case BOT_BOSSZOMBIE:
 		return "僵尸";
 		break;
-	
+
 	case BOT_BOSSSKELET:
 		return "骷髅";
 		break;
@@ -6366,7 +6375,7 @@ const char *CGameContext::GetBotName(int BotType)
 	case BOT_BOSSGUARD:
 		return "守卫";
 		break;
-	
+
 	default:
 		break;
 	}
@@ -6471,6 +6480,10 @@ void CGameContext::RefreshDailyQuest(tm *pTime, bool Reset)
 			Server()->SetItemSettingsCount(i, COLLECTQUEST, 0);
 			Server()->SetItemSettingsCount(i, KILLQUEST, 0);
 			Server()->SetItemSettingsCount(i, CHALLENGEQUEST, 0);
+
+			m_apPlayers[i]->m_FinishedCollectQuest = false;
+			m_apPlayers[i]->m_FinishedKillQuest = false;
+			m_apPlayers[i]->m_FinishedChallengeQuest = false;
 
 			UpdateStats(i);
 		}
@@ -6635,7 +6648,7 @@ int CGameContext::GetDailyQuestUpgr(int Quest, int SubType)
 
 		case EDailyQuests::COLLECT4:
 			return 150;
-		
+
 		default:
 			break;
 		}
@@ -6661,7 +6674,7 @@ int CGameContext::GetDailyQuestUpgr(int Quest, int SubType)
 			if(RandomNumber%6 == 4 || RandomNumber%6 == 5)
 				return 750;
 			return RandomNumber%750+200;
-		
+
 		default:
 			break;
 		}
@@ -6686,7 +6699,7 @@ int CGameContext::GetUpgrMaxLevel(int ClientID, int Upgr, bool MoreLevel)
 		return 1;
 
 	int Class = m_apPlayers[ClientID]->GetClass();
-	
+
 	Class -= PLAYERCLASS_ASSASSIN;
 
 	// Avoid crash
@@ -6696,7 +6709,7 @@ int CGameContext::GetUpgrMaxLevel(int ClientID, int Upgr, bool MoreLevel)
 	int Return = m_aaUpgrMaxLevel[Class][Upgr];
 	if(Return == -1)
 		return 5000; // Bruh don't too big.
-	
+
 	if(Upgr == UPGRADE_SPRAY)
 		MoreLevel = false;
 
