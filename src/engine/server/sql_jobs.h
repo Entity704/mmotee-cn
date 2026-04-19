@@ -766,12 +766,12 @@ public:
 		char aBuf[256];
 		if(m_pServer->m_aClients[m_ClientID].m_LogInstance != GetInstance())
 			return true;
-	
+
 		try
 		{
 			if(bGetCount)
 			{
-				str_format(aBuf, sizeof(aBuf), 
+				str_format(aBuf, sizeof(aBuf),
 					"SELECT il_id, item_type FROM %s_uItems "
 					"WHERE item_owner = '%d' AND item_type != '10, 12, 15, 16, 17';",
 					pSqlServer->GetPrefix(),
@@ -786,16 +786,16 @@ public:
 					int ItemType = (int)pSqlServer->GetResults()->getInt("item_type");
 					m_pServer->m_aClients[m_ClientID].m_ItemCount[ItemType]++;
 				}
-				return true;			
+				return true;
 			}
 
-			str_format(aBuf, sizeof(aBuf), 
+			str_format(aBuf, sizeof(aBuf),
 				"SELECT il_id, item_count FROM %s_uItems "
 				"WHERE item_owner = '%d' AND item_type = '%d';",
 				pSqlServer->GetPrefix(),
 				m_pServer->m_aClients[m_ClientID].m_UserID, m_Type);
 			pSqlServer->executeSqlQuery(aBuf);
-			
+
 			bool found = false;
 			while(pSqlServer->GetResults()->next())
 			{
@@ -805,10 +805,10 @@ public:
 				m_pServer->m_stInv[m_ClientID][ItemID].i_count = ItemCount;
 
 				char iName[64], iUsed[8];
-				if(m_Type == 15 || m_Type == 16 || m_Type == 17) 
+				if(m_Type == 15 || m_Type == 16 || m_Type == 17)
 				{
 					str_format(iUsed, sizeof(iUsed), "it%d", ItemID);
-					str_format(iName, sizeof(iName), "➳ Lvl%d %s +%d", 
+					str_format(iName, sizeof(iName), "➳ Lvl%d %s +%d",
 						m_pServer->GetItemPrice(m_ClientID, ItemID, 0), m_pServer->GetItemName(m_ClientID, ItemID), m_pServer->GetItemEnchant(m_ClientID, ItemID), ItemCount);
 
 					CServer::CGameServerCmd* pCmd = new CGameServerCmd_AddLocalizeVote_Language(m_ClientID, iUsed, _(iName));
@@ -818,14 +818,14 @@ public:
 					str_format(iUsed, sizeof(iUsed), "set%d", ItemID);
 					if(m_Type == 17)
 					{
-						str_format(iName, sizeof(iName), "➳ %s %s (伤害 +%d)", 
-							Data,  m_pServer->GetItemName(m_ClientID, ItemID), m_pServer->GetBonusEnchant(m_ClientID, ItemID, m_Type));				
+						str_format(iName, sizeof(iName), "➳ %s %s (伤害 +%d)",
+							Data,  m_pServer->GetItemName(m_ClientID, ItemID), m_pServer->GetBonusEnchant(m_ClientID, ItemID, m_Type));
 					}
 					else
 					{
-						str_format(iName, sizeof(iName), "➳ %s %s (生命值 +%d 护盾 +%d)", 
-							Data,  m_pServer->GetItemName(m_ClientID, ItemID), m_pServer->GetBonusEnchant(m_ClientID, ItemID, m_Type), 
-							m_pServer->GetBonusEnchant(m_ClientID, ItemID, m_Type));				
+						str_format(iName, sizeof(iName), "➳ %s %s (生命值 +%d 护盾 +%d)",
+							Data,  m_pServer->GetItemName(m_ClientID, ItemID), m_pServer->GetBonusEnchant(m_ClientID, ItemID, m_Type),
+							m_pServer->GetBonusEnchant(m_ClientID, ItemID, m_Type));
 					}
 
 					pCmd = new CGameServerCmd_AddLocalizeVote_Language(m_ClientID, iUsed, _(iName));
@@ -834,9 +834,9 @@ public:
 				else
 				{
 					str_format(iUsed, sizeof(iUsed), "it%d", ItemID);
-					str_format(iName, sizeof(iName), "➳ Lvl%d %s : X%d", 
+					str_format(iName, sizeof(iName), "➳ Lvl%d %s : X%d",
 						m_pServer->GetItemPrice(m_ClientID, ItemID, 0), m_pServer->GetItemName(m_ClientID, ItemID), ItemCount);
-				
+
 					CServer::CGameServerCmd* pCmd = new CGameServerCmd_AddLocalizeVote_Language(m_ClientID, iUsed, _(iName));
 					m_pServer->AddGameServerCmd(pCmd);
 				}
@@ -849,12 +849,12 @@ public:
 			}
 		}
 		catch (sql::SQLException const &e)
-		{		
+		{
 			return false;
 		}
 		return true;
 	}
-	
+
 	virtual void CleanInstanceRef()
 	{
 		m_pServer->m_aClients[m_ClientID].m_LogInstance = -1;
@@ -866,7 +866,7 @@ class CSqlJob_Server_InitClan : public CSqlJob
 {
 private:
 	CServer* m_pServer;
-	
+
 public:
 	CSqlJob_Server_InitClan(CServer* pServer)
 	{
@@ -898,12 +898,12 @@ public:
 				str_copy(m_pServer->m_stClan[ClanID].Name, pSqlServer->GetResults()->getString("Clanname").c_str(), sizeof(m_pServer->m_stClan[ClanID].Name));
 				str_copy(m_pServer->m_stClan[ClanID].Creator, pSqlServer->GetResults()->getString("LeaderName").c_str(), sizeof(m_pServer->m_stClan[ClanID].Creator));
 				str_copy(m_pServer->m_stClan[ClanID].Admin, pSqlServer->GetResults()->getString("AdminName").c_str(), sizeof(m_pServer->m_stClan[ClanID].Admin));
-				
-				
+
+
 				m_pServer->UpdClanCount(ClanID);
 				Num++;
 			}
-			
+
 			dbg_msg("mmotee", "############################################");
 			dbg_msg("mmotee", "################ 加载了 %d 个公会", Num);
 			dbg_msg("mmotee", "############################################");
@@ -913,7 +913,7 @@ public:
 			dbg_msg("mmotee", "Fail in initialize clans");
 			return false;
 		}
-		
+
 		return true;
 	}
 };

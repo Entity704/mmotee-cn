@@ -541,7 +541,7 @@ void CGameContext::SendGuide(int ClientID, int BossType)
 		arghealth = 2000;
 		Server()->Localization()->Format_L(Buffer, pLanguage, _("武器:激光 射速:快\n奖励:\n- 钱袋 x50-100\n- 僵尸的眼睛 x3-5"), NULL);
 		break;
-	
+
 	case BOT_BOSSSKELET:
 		arghealth = 2000;
 		Server()->Localization()->Format_L(Buffer, pLanguage, _("武器:激光 射速:快\n奖励:\n- 钱袋 x100-200\n- 骷髅的骨头 x3-5\n- 4% - 骷髅的头骨x1"), NULL);
@@ -693,8 +693,14 @@ void CGameContext::SendBroadcast_LStat(int To, int Priority, int LifeSpan, int T
 	}
 
 	int O2 = Server()->GetItemCount(To, MOONO2);
+	char TracingItemInfo[32];
+	str_format(
+		TracingItemInfo, sizeof(TracingItemInfo), "%d 个 %s",
+		m_pServer->GetItemCount(To, m_apPlayers[To]->m_TracingItemId),
+		m_pServer->GetItemName(To, m_apPlayers[To]->m_TracingItemId)
+	);
 
-	SendBroadcast_Localization(To, Priority, LifeSpan, _(" \n\n等级: {int:lvl} | 经验: {int:exp}/{int:expl}\n----------------------\n{str:sdata} {int:getl}%\n{str:dataang} 怒气\n----------------------\n{str:mana} 魔能\n生命值: {int:hp}/{int:hpstart}\n氧气: {int:o2}\n\n\n\n\n\n\n\n\n\n\n\n{str:buff}{str:emp}"),
+	SendBroadcast_Localization(To, Priority, LifeSpan, _(" \n\n等级: {int:lvl} | 经验: {int:exp}/{int:expl}\n----------------------\n{str:sdata} {int:getl}%\n{str:dataang} 怒气\n----------------------\n{str:mana} 魔能\n生命值: {int:hp}/{int:hpstart}\n氧气: {int:o2}\n追踪物品: {str:tiinfo}\n\n\n\n\n\n\n\n\n{str:buff}{str:emp}"),
 							   "lvl", &m_apPlayers[To]->AccData()->m_Level,
 							   "exp", &m_apPlayers[To]->AccData()->m_Exp,
 							   "expl", &Optmem,
@@ -705,6 +711,7 @@ void CGameContext::SendBroadcast_LStat(int To, int Priority, int LifeSpan, int T
 							   "hp", &m_apPlayers[To]->m_Health,
 							   "hpstart", &m_apPlayers[To]->m_HealthStart,
 							   "o2", &O2,
+							   "tiinfo", &TracingItemInfo,
 							   "buff", Buffer.buffer(),
 							   "emp", "                                                                                                                                                                    ");
 	Buffer.clear();
@@ -2675,7 +2682,8 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 
 				else if (str_comp(aCmd, "traceitem") == 0)
 				{
-					SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("该功能尚未完成~"), NULL);
+					m_apPlayers[ClientID]->m_TracingItemId = m_apPlayers[ClientID]->m_SelectItem;
+
 					ResetVotes(ClientID, AUTH);
 					m_apPlayers[ClientID]->m_SelectItem = -1;
 					return;
@@ -4896,7 +4904,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 				AddVote("", "null", ClientID);
 			}
 			AddVote_Localization(ClientID, "destitem", "▹ 摧毁物品 ㄟ( ▔, ▔ )ㄏ ");
-			AddVote_Localization(ClientID, "traceitem", "▹ 追踪该物品");
+			AddVote_Localization(ClientID, "traceitem", "▹ 追踪该物品（侧栏显示该物品数量，也许刷怪时有用）");
 			AddBack(ClientID);
 			return;
 		}
@@ -4924,7 +4932,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 						AddVote_Localization(ClientID, "null", "任务奖励: {str:got}, 解锁Boss:捣蛋猪", "got", "4000经验/200000白银");
 					}
 					break;
-					
+
 					case EMainQuests::QUEST2_PIGGY2:
 					{
 						int Need = EMainQuestNeed::QUEST2, Counts = Server()->GetItemCount(ClientID, PIGPORNO);
@@ -4935,7 +4943,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 						AddVote_Localization(ClientID, "null", "任务奖励: {str:got}", "got", "4000经验/250000白银");
 					}
 					break;
-					
+
 					case EMainQuests::QUEST3_KWAH1:
 					{
 						int Need = EMainQuestNeed::QUEST3, Counts = Server()->GetItemCount(ClientID, KWAHGANDON);
@@ -4946,7 +4954,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 						AddVote_Localization(ClientID, "null", "任务奖励: {str:got},解锁Boss:Slime", "got", "8000经验/500000白银");
 					}
 					break;
-					
+
 					case EMainQuests::QUEST4_KWAH2:
 					{
 						int Need = EMainQuestNeed::QUEST4, Counts = Server()->GetItemCount(ClientID, KWAHGANDON);
@@ -4957,7 +4965,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 						AddVote_Localization(ClientID, "null", "任务奖励: {str:got},解锁Boss:吸血鬼", "got", "8000经验/550000白银");
 					}
 					break;
-					
+
 					case EMainQuests::QUEST5_PIGGYNKWAHSTEP1:
 					{
 						int Need = EMainQuestNeed::QUEST5;
@@ -4973,7 +4981,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 						AddVote_Localization(ClientID, "null", "任务奖励: {str:got}", "got", "Kwah 耳环, 1000000白银");
 					}
 					break;
-					
+
 					case EMainQuests::QUEST6_KWAHSTEP1:
 					{
 						int Need = EMainQuestNeed::QUEST6;
@@ -4989,7 +4997,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 						AddVote_Localization(ClientID, "null", "+ 称号:眷属");
 					}
 					break;
-					
+
 					case EMainQuests::QUEST7_BADGUARD:
 					{
 						int Need = EMainQuestNeed::QUEST7;
@@ -5026,14 +5034,14 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 						AddVote_Localization(ClientID, "null", _("任务奖励: 升级点3000"));
 					}
 					break;
-					
+
 					default:
 					{
 						Trying = false;
 						AddVote_Localization(ClientID, "null", "任务不可用");
 					}
 					break;
-					
+
 				}
 
 				if (Trying)

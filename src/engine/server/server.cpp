@@ -2867,7 +2867,7 @@ void CServer::UpdateStats(int ClientID, int Type)
 {
 	if(m_aClients[ClientID].AccData.m_Class < 0 || (m_aClients[ClientID].m_UserID < 0 && m_vpGameServer[DEFAULT_MAP_ID]) || m_aClients[ClientID].AccData.m_Level <= 0)
 		return;
-	
+
 	CSqlJob* pJob = new CSqlJob_Server_UpdateStat(this, ClientID, m_aClients[ClientID].m_UserID, Type);
 	pJob->Start();
 }
@@ -2887,10 +2887,10 @@ bool CServer::GetLeader(int ClientID, int ClanID)
 {
 	if(m_aClients[ClientID].AccData.m_ClanID < 1)
 		return false;
-	
+
 	if(str_comp_nocase(m_stClan[ClanID].Creator, ClientName(ClientID)) == 0)
 		return true;
-	else 
+	else
 		return false;
 }
 
@@ -2898,10 +2898,10 @@ bool CServer::GetAdmin(int ClientID, int ClanID)
 {
 	if(m_aClients[ClientID].AccData.m_ClanID < 1)
 		return false;
-	
+
 	if(str_comp_nocase(m_stClan[ClanID].Admin, ClientName(ClientID)) == 0)
 		return true;
-	else 
+	else
 		return false;
 }
 

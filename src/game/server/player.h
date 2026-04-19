@@ -116,6 +116,8 @@ public:
 	bool m_FinishedKillQuest;
 	bool m_FinishedChallengeQuest;
 
+	int m_TracingItemId;
+
 	// TODO: clean this up
 	struct
 	{

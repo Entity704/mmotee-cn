@@ -66,6 +66,8 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, int Team)
 	m_FinishedKillQuest = false;
 	m_FinishedChallengeQuest = false;
 
+	m_TracingItemId = PIGPORNO;
+
 	m_pChatCmd = new CCmd(this, m_pGameServer);
 	SetLanguage("cn");
 
