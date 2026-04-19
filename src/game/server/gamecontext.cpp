@@ -697,7 +697,7 @@ void CGameContext::SendBroadcast_LStat(int To, int Priority, int LifeSpan, int T
 	int TracingItemCount = m_pServer->GetItemCount(To, m_apPlayers[To]->m_TracingItemId);
 	int GoalCount = m_apPlayers[To]->m_TracingItemGoalCount;
 	char TracingItemInfo[64];
-	const char *ProgressBar = GoalCount ? LevelString(100, (int)((TracingItemCount * 100.0) / GoalCount), 10, '#', '~') : "";
+	const char *ProgressBar = GoalCount ? LevelString(100, (int)((TracingItemCount * 100.0) / GoalCount), 4, ':', ' ') : "";
 	str_format(
 		TracingItemInfo, sizeof(TracingItemInfo), "\n %s\n %d/%d\n %s",
 		m_pServer->GetItemName(To, m_apPlayers[To]->m_TracingItemId),
@@ -706,7 +706,7 @@ void CGameContext::SendBroadcast_LStat(int To, int Priority, int LifeSpan, int T
 		ProgressBar
 	);
 
-	SendBroadcast_Localization(To, Priority, LifeSpan, _(" \n\n等级: {int:lvl} | 经验: {int:exp}/{int:expl}\n----------------------\n{str:sdata} {int:getl}%\n{str:dataang} 怒气\n----------------------\n{str:mana} 魔能\n生命值: {int:hp}/{int:hpstart}\n氧气: {int:o2}\n\n追踪物品: {str:tiinfo}\n\n\n\n\n\n{str:buff}{str:emp}"),
+	SendBroadcast_Localization(To, Priority, LifeSpan, _(" \n\n等级: {int:lvl} | 经验: {int:exp}/{int:expl}\n----------------------\n{str:sdata} {int:getl}%\n{str:dataang} 怒气\n----------------------\n{str:mana} 魔能\n生命值: {int:hp}/{int:hpstart}\n氧气: {int:o2}\n\n追踪物品: {str:tiinfo}\n\n\n\n\n\n  {str:buff}{str:emp}"),
 							   "lvl", &m_apPlayers[To]->AccData()->m_Level,
 							   "exp", &m_apPlayers[To]->AccData()->m_Exp,
 							   "expl", &Optmem,
