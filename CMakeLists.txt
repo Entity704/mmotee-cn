@@ -298,11 +298,11 @@ find_package(ZLIB)
 find_package(OpenSSL)
 find_package(ICU)
 find_package(MySQL)
-find_package(PythonInterp 3)
+find_package(Python COMPONENTS Interpreter)
 find_package(Threads)
 
 if(TARGET_OS AND TARGET_OS STREQUAL "linux")
-  find_package(Boost 1.36.0)
+  find_package(Boost 1.36.0 CONFIG)
 endif()
 
 message(STATUS "******** ${PROJECT_NAME} ********")
@@ -329,7 +329,7 @@ show_dependency_status("PythonInterp" PYTHONINTERP)
 show_dependency_status("Zlib" ZLIB)
 show_dependency_status("ICU" ICU)
 
-if(NOT(PYTHONINTERP_FOUND))
+if(NOT(Python_Interpreter_FOUND))
   message(SEND_ERROR "You must install Python to compile the ${PROJECT_NAME}")
 endif()
 if(NOT(MYSQL_FOUND))
@@ -383,7 +383,7 @@ file(COPY ${COPY_FILES} DESTINATION .)
 ########################################################################
 function(chash output_file)
   add_custom_command(OUTPUT ${output_file}
-    COMMAND ${PYTHON_EXECUTABLE} scripts/cmd5.py ${ARGN}
+    COMMAND ${Python3_EXECUTABLE} scripts/cmd5.py ${ARGN}
       > "${PROJECT_BINARY_DIR}/${output_file}"
     DEPENDS scripts/cmd5.py ${ARGN}
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -392,7 +392,7 @@ endfunction()
 
 function(generate_source output_file script_parameter)
   add_custom_command(OUTPUT ${output_file}
-    COMMAND ${PYTHON_EXECUTABLE} datasrc/compile.py ${script_parameter}
+    COMMAND ${Python3_EXECUTABLE} datasrc/compile.py ${script_parameter}
       > "${PROJECT_BINARY_DIR}/${output_file}"
     DEPENDS
       datasrc/compile.py
@@ -405,7 +405,7 @@ endfunction()
 
 function(generate_source7 output_file script_parameter)
   add_custom_command(OUTPUT ${output_file}
-    COMMAND ${PYTHON_EXECUTABLE} -m datasrc.seven.compile ${script_parameter}
+    COMMAND ${Python3_EXECUTABLE} -m datasrc.seven.compile ${script_parameter}
       > "${PROJECT_BINARY_DIR}/${output_file}"
     DEPENDS
       datasrc/seven/compile.py
@@ -418,7 +418,7 @@ endfunction()
 
 function(generate_maps output_file)
   add_custom_command(OUTPUT ${output_file}
-    COMMAND ${PYTHON_EXECUTABLE} datasrc/crosscompile.py
+    COMMAND ${Python3_EXECUTABLE} datasrc/crosscompile.py
       > "${PROJECT_BINARY_DIR}/${output_file}"
     DEPENDS
       datasrc/compile.py
@@ -448,7 +448,7 @@ if(NOT PROJECT_GIT_DIR_ERROR)
   )
 endif()
 add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/src/game/generated/git_revision.cpp
-  COMMAND ${PYTHON_EXECUTABLE}
+  COMMAND ${Python3_EXECUTABLE}
     scripts/git_revision.py
     > ${PROJECT_BINARY_DIR}/src/game/generated/git_revision.cpp
   WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
