@@ -55,7 +55,7 @@
 
 static const char *StrLtrim(const char *pStr)
 {
-	while(*pStr && *pStr >= 0 && *pStr <= 32)
+	while(*pStr && (unsigned char)*pStr <= 32)
 		pStr++;
 	return pStr;
 }
@@ -65,7 +65,7 @@ static void StrRtrim(char *pStr)
 	int i = str_length(pStr);
 	while(i >= 0)
 	{
-		if(pStr[i] < 0 || pStr[i] > 32)
+		if((unsigned char)pStr[i] > 32)
 			break;
 		pStr[i] = 0;
 		i--;
@@ -1352,7 +1352,7 @@ char *CServer::GetMapName()
 
 int CServer::LoadMap(const char *pMapName)
 {
-	CMapData data;
+	CMapData data{};
 	char aBufMultiMap[512];
 	for(int i = 0; i < (int)m_vMapData.size(); ++i)
 	{

@@ -92,13 +92,13 @@ void CGameContext::Clear()
 
 	m_Tuning = Tuning;
 
-	for (int i = 0; i < MAX_CLIENTS; i++)
+	for (CBroadcastState &State : m_aBroadcastStates)
 	{
-		m_aBroadcastStates[i].m_NoChangeTick = 0;
-		m_aBroadcastStates[i].m_LifeSpanTick = 0;
-		m_aBroadcastStates[i].m_Priority = BROADCAST_PRIORITY_LOWEST;
-		m_aBroadcastStates[i].m_aPrevMessage[0] = 0;
-		m_aBroadcastStates[i].m_aNextMessage[0] = 0;
+		State.m_NoChangeTick = 0;
+		State.m_LifeSpanTick = 0;
+		State.m_Priority = BROADCAST_PRIORITY_LOWEST;
+		State.m_aPrevMessage[0] = 0;
+		State.m_aNextMessage[0] = 0;
 	}
 }
 

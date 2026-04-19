@@ -96,14 +96,14 @@ void CLoltext::Create(CGameWorld *pGameWorld, CEntity *pParent, vec2 Pos, vec2 V
 
 bool CLoltext::HasRepr(char c) // can be removed when we have a full character set
 {
-	if(((unsigned)c) >= 256 || ((unsigned)c) < 0)
-		return false;
+    unsigned char uc = static_cast<unsigned char>(c);
 
-	for(int y = 0; y < 5; ++y)
-		for(int x = 0; x < 3; ++x)
-			if (s_aaaChars[(unsigned)c][y][x])
-				return true;
-	return false;
+    for (int y = 0; y < 5; ++y)
+        for (int x = 0; x < 3; ++x)
+            if (s_aaaChars[uc][y][x])
+                return true;
+
+    return false;
 }
 
 bool CLoltext::s_aaaChars[256][5][3] = {
