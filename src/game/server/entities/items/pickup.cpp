@@ -325,7 +325,7 @@ void CPickup::StartFarm(int ClientID)
 
 				if(DragonCount)
 				{
-					GameServer()->GiveItem(ClientID, DRAGONORE, random_prob(0.3) ? DragonCount * 6 : DragonCount);
+					GameServer()->GiveItem(ClientID, DRAGONORE, random_prob(0.3) ? std::round(DragonCount * 6/5) : DragonCount);
 					GameServer()->SendChatTarget_Localization(ClientID, -1, _("[{str:minecore}] 矿物额外奖励：龙矿"), "minecore", Server()->GetItemName(ClientID, MINECORE), NULL);
 				}
 				if(StanCount)
