@@ -309,8 +309,8 @@ void CPickup::StartFarm(int ClientID)
 			{
 				float DragonProb = std::fmod(MineCoreCount * 0.1, 1.0);
 				float StanProb = std::fmod(MineCoreCount * 0.02, 1.0);
-				int DragonCount = (int)std::floorf(MineCoreCount * 0.1);
-				int StanCount = (int)std::floorf(MineCoreCount * 0.02);
+				int DragonCount = (int)std::floor(MineCoreCount * 0.1);
+				int StanCount = (int)std::floor(MineCoreCount * 0.02);
 
 				if(random_prob(DragonProb))
 				{
