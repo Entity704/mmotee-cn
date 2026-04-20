@@ -8,6 +8,8 @@
 
 #include "pickup.h"
 
+#include <cmath>
+
 CPickup::CPickup(CGameWorld *pGameWorld, int Type, vec2 Pos, int SubType)
 : CEntity(pGameWorld, ENTTYPE_PICKUP)
 {
@@ -193,7 +195,7 @@ void CPickup::StartFarm(int ClientID)
 			}
 			Server()->SetItemSettingsCount(ClientID, DRAGONPIX, Dropable-1);
 			ItemName = Server()->GetItemName(ClientID, DRAGONPIX);
-			Temp += random_int(45,60);	
+			Temp += random_int(45,60);
 		}
 		if(Server()->GetItemCount(ClientID, DIAMONDPIX))
 		{
@@ -207,7 +209,7 @@ void CPickup::StartFarm(int ClientID)
 			}
 			Server()->SetItemSettingsCount(ClientID, DIAMONDPIX, Dropable-1);
 			ItemName = Server()->GetItemName(ClientID, DIAMONDPIX);
-			Temp += 35;	
+			Temp += 35;
 		}
 		else if(Server()->GetItemCount(ClientID, GOLDPIX))
 		{
@@ -221,7 +223,7 @@ void CPickup::StartFarm(int ClientID)
 			}
 			Server()->SetItemSettingsCount(ClientID, GOLDPIX, Dropable-1);
 			ItemName = Server()->GetItemName(ClientID, GOLDPIX);
-			Temp += 20;	
+			Temp += 20;
 		}
 		else if(Server()->GetItemCount(ClientID, IRONPIX))
 		{
@@ -235,7 +237,7 @@ void CPickup::StartFarm(int ClientID)
 			}
 			Server()->SetItemSettingsCount(ClientID, IRONPIX, Dropable-1);
 			ItemName = Server()->GetItemName(ClientID, IRONPIX);
-			Temp += 15;	
+			Temp += 15;
 		}
 		else if(Server()->GetItemCount(ClientID, COOPERPIX))
 		{
@@ -249,7 +251,7 @@ void CPickup::StartFarm(int ClientID)
 			}
 			Server()->SetItemSettingsCount(ClientID, COOPERPIX, Dropable-1);
 			ItemName = Server()->GetItemName(ClientID, COOPERPIX);
-			Temp += 10;	
+			Temp += 10;
 		}
 		else
 		{
@@ -266,12 +268,12 @@ void CPickup::StartFarm(int ClientID)
 
 		m_Drop += Temp;
 
-		GameServer()->CreateSound(m_Pos, 20); 
+		GameServer()->CreateSound(m_Pos, 20);
 
 		int LevelItem = 1+Server()->GetItemCount(ClientID, MINEREXP)/g_Config.m_SvMinerExp;
 		int ExpNeed = LevelItem*g_Config.m_SvMinerExp;
 		int Exp = Server()->GetItemCount(ClientID, MINEREXP);
-		
+
 		float getlv = (m_Drop*100.0)/100;
 		GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("专长 - 采掘: {int:lvl}级 : {int:exp}/{int:expneed}经验\n工具: {str:name}x{int:count} ({int:brok}/{int:brok2})\n挖掘进度: {str:got} / {int:gotp}%"), 
 			"lvl", &LevelItem, "exp", &Exp, "expneed", &ExpNeed, "brok", &Dropable, "brok2", &Broke, "name", ItemName, "count", &Count, "got", GameServer()->LevelString(100, (int)getlv, 10, ':', ' '), "gotp", &m_Drop, NULL);
@@ -289,28 +291,48 @@ void CPickup::StartFarm(int ClientID)
 
 			switch(random_int(0, ItemDrop))
 			{
-				case 3: GameServer()->GiveItem(ClientID, IRONORE, 1+LevelItem/30); break; 
-				case 4: GameServer()->GiveItem(ClientID, GOLDORE, 1+LevelItem/45); break; 
-				case 5: GameServer()->GiveItem(ClientID, DIAMONDORE, 1+LevelItem/60); break; 
-				case 7: GameServer()->GiveItem(ClientID, DRAGONORE, 1+LevelItem/600); break; 
+				case 3: GameServer()->GiveItem(ClientID, IRONORE, 1+LevelItem/30); break;
+				case 4: GameServer()->GiveItem(ClientID, GOLDORE, 1+LevelItem/45); break;
+				case 5: GameServer()->GiveItem(ClientID, DIAMONDORE, 1+LevelItem/60); break;
+				case 7: GameServer()->GiveItem(ClientID, DRAGONORE, 1+LevelItem/600); break;
 				default: GameServer()->GiveItem(ClientID, COOPERORE, 1+LevelItem/15); break;
 			}
 			GameServer()->GiveItem(ClientID, MINEREXP, 1);
-			
-			float StanProb = (Server()->GetItemCount(ClientID, MINECORE) + 1) * 0.001f;
-			if(random_prob(min(0.1f, StanProb)))
-			{	
+
+			if(random_prob(0.001f))
+			{
 				GameServer()->GiveItem(ClientID, STANNUM, 1);
-				if(Server()->GetItemCount(ClientID, MINECORE))
+			}
+
+			int MineCoreCount = Server()->GetItemCount(ClientID, MINECORE);
+			if(MineCoreCount)
+			{
+				float DragonProb = std::fmod(MineCoreCount * 0.1, 1.0);
+				float StanProb = std::fmod(MineCoreCount * 0.02, 1.0);
+				int DragonCount = (int)std::floorf(MineCoreCount * 0.1);
+				int StanCount = (int)std::floorf(MineCoreCount * 0.02);
+
+				if(random_prob(DragonProb))
 				{
-					GameServer()->GiveItem(ClientID, COOPERORE, 1);
-					GameServer()->GiveItem(ClientID, IRONORE, 1);
-					GameServer()->GiveItem(ClientID, GOLDORE, 1);
-					GameServer()->GiveItem(ClientID, DIAMONDORE, 1);
 					GameServer()->GiveItem(ClientID, DRAGONORE, 1);
-					GameServer()->SendChatTarget_Localization(ClientID, -1, _("[{str:minecore}] 矿物额外奖励"), "minecore", Server()->GetItemName(ClientID, MINECORE), NULL);
+					GameServer()->SendChatTarget_Localization(ClientID, -1, _("[{str:minecore}] 矿物概率奖励：龙矿"), "minecore", Server()->GetItemName(ClientID, MINECORE), NULL);
 				}
-				
+				if(random_prob(StanProb))
+				{
+					GameServer()->GiveItem(ClientID, STANNUM, 1);
+					GameServer()->SendChatTarget_Localization(ClientID, -1, _("[{str:minecore}] 矿物概率奖励：锡矿"), "minecore", Server()->GetItemName(ClientID, MINECORE), NULL);
+				}
+
+				if(DragonCount)
+				{
+					GameServer()->GiveItem(ClientID, DRAGONORE, random_prob(0.3) ? DragonCount * 6 : DragonCount);
+					GameServer()->SendChatTarget_Localization(ClientID, -1, _("[{str:minecore}] 矿物额外奖励：龙矿"), "minecore", Server()->GetItemName(ClientID, MINECORE), NULL);
+				}
+				if(StanCount)
+				{
+					GameServer()->GiveItem(ClientID, STANNUM, random_prob(0.06) ? StanCount * 2 : StanCount);
+					GameServer()->SendChatTarget_Localization(ClientID, -1, _("[{str:minecore}] 矿物额外奖励：锡矿"), "minecore", Server()->GetItemName(ClientID, MINECORE), NULL);
+				}
 			}
 
 			// 加经验
