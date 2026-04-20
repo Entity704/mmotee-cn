@@ -104,6 +104,18 @@ void CPickup::StartFarm(int ClientID)
 	if(!pFarm || !pFarm->GetCharacter() || m_SpawnTick != -1 || pFarm->IsBot())
 		return;
 
+	int TracingItemCount = Server()->GetItemCount(ClientID, GameServer()->m_apPlayers[ClientID]->m_TracingItemId);
+	int GoalCount = GameServer()->m_apPlayers[ClientID]->m_TracingItemGoalCount;
+	char TracingItemInfo[128];
+	const char *ProgressBar = TracingItemCount < GoalCount ? GameServer()->LevelString(100, (int)((TracingItemCount * 100.0) / GoalCount), 4, '|', ' ') : "[  = FINISHED =  ]";
+	str_format(
+		TracingItemInfo, sizeof(TracingItemInfo), "追踪物品 %s: %s %d / %d",
+		Server()->GetItemName(ClientID, GameServer()->m_apPlayers[ClientID]->m_TracingItemId),
+		ProgressBar,
+		TracingItemCount,
+		GoalCount
+	);
+
 	if(!m_SubType) // ########################### FARMING
 	{
 		int Dropable = 0;
@@ -129,7 +141,7 @@ void CPickup::StartFarm(int ClientID)
 
 		if(Server()->GetItemSettings(ClientID, TITLEFARMF))
 			Temp *= 2;
-		
+
 		if(Server()->GetItemSettings(ClientID, DONATETITLEWORK))
 		{
 			Temp += 100;
@@ -137,18 +149,17 @@ void CPickup::StartFarm(int ClientID)
 		}
 
 		m_Drop += Temp;
-		
-		GameServer()->CreateSound(m_Pos, 20); 
+
+		GameServer()->CreateSound(m_Pos, 20);
 
 		int LevelItem = 1+Server()->GetItemCount(ClientID, FARMLEVEL)/g_Config.m_SvFarmExp;
 		int NeedExp = LevelItem*g_Config.m_SvFarmExp;
 		int Exp = Server()->GetItemCount(ClientID, FARMLEVEL);
 
 		float getlv = (m_Drop*100.0)/100;
-		
-		GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("专长 - 种地: {int:lvl}级: {int:exp}/{int:expneed}经验\n工具: {str:name}x{int:count} ({int:brok}/{int:brok2})\n物品 : 采集进度: {str:got} / {int:gotp}%"), 
-			"lvl", &LevelItem, "exp", &Exp, "expneed", &NeedExp, "name", ItemName, "count", &Count, "brok", &Dropable, "brok2", &Broke, "got", GameServer()->LevelString(100, (int)getlv, 10, ':', ' '), "gotp", &m_Drop, NULL);
-		
+
+		GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("专长 - 种地: {int:lvl}级: {int:exp}/{int:expneed}经验\n工具: {str:name}x{int:count} ({int:brok}/{int:brok2})\n物品 : 采集进度: {str:got} / {int:gotp}%\n\n{str:pbar}"),
+			"lvl", &LevelItem, "exp", &Exp, "expneed", &NeedExp, "name", ItemName, "count", &Count, "brok", &Dropable, "brok2", &Broke, "got", GameServer()->LevelString(100, (int)getlv, 10, ':', ' '), "gotp", &m_Drop, "pbar", &TracingItemInfo, NULL);
 
 		if(m_Drop >= 100)
 		{
@@ -160,7 +171,7 @@ void CPickup::StartFarm(int ClientID)
 
 			switch(random_int(0, 5))
 			{
-				case 0:	GameServer()->GiveItem(ClientID, TOMATE, LevelItem); break; 
+				case 0:	GameServer()->GiveItem(ClientID, TOMATE, LevelItem); break;
 				case 1: GameServer()->GiveItem(ClientID, POTATO, LevelItem); break;
 				case 2: GameServer()->GiveItem(ClientID, CABBAGE, LevelItem); break;
 				default: GameServer()->GiveItem(ClientID, CARROT, LevelItem); break;
@@ -275,8 +286,8 @@ void CPickup::StartFarm(int ClientID)
 		int Exp = Server()->GetItemCount(ClientID, MINEREXP);
 
 		float getlv = (m_Drop*100.0)/100;
-		GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("专长 - 采掘: {int:lvl}级 : {int:exp}/{int:expneed}经验\n工具: {str:name}x{int:count} ({int:brok}/{int:brok2})\n挖掘进度: {str:got} / {int:gotp}%"), 
-			"lvl", &LevelItem, "exp", &Exp, "expneed", &ExpNeed, "brok", &Dropable, "brok2", &Broke, "name", ItemName, "count", &Count, "got", GameServer()->LevelString(100, (int)getlv, 10, ':', ' '), "gotp", &m_Drop, NULL);
+		GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("专长 - 采掘: {int:lvl}级 : {int:exp}/{int:expneed}经验\n工具: {str:name}x{int:count} ({int:brok}/{int:brok2})\n挖掘进度: {str:got} / {int:gotp}%\n\n{str:pbar}"),
+			"lvl", &LevelItem, "exp", &Exp, "expneed", &ExpNeed, "brok", &Dropable, "brok2", &Broke, "name", ItemName, "count", &Count, "got", GameServer()->LevelString(100, (int)getlv, 10, ':', ' '), "gotp", &m_Drop, "pbar", &TracingItemInfo, NULL);
 
 
 		if(m_Drop >= 100)
@@ -361,7 +372,7 @@ void CPickup::StartFarm(int ClientID)
 			}
 			Server()->SetItemSettingsCount(ClientID, DRAGONAXE, Dropable-1);
 			ItemName = Server()->GetItemName(ClientID, DRAGONAXE);
-			Temp += 35;	
+			Temp += 35;
 		}
 		else
 		{
@@ -377,14 +388,14 @@ void CPickup::StartFarm(int ClientID)
 			Temp += 100;
 			Temp *= 2;
 		}
-		
+
 		m_Drop += Temp;
 
-		GameServer()->CreateSound(m_Pos, 20); 
+		GameServer()->CreateSound(m_Pos, 20);
 
 		float getlv = (m_Drop*100.0)/100;
-		GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("专长 - 伐木工: (光头强不会升级)\n工具: {str:name}x{int:count} ({int:brok}/{int:brok2})\n砍伐进度: {str:got} / {int:gotp}%"), 
-			"name", ItemName, "count", &Count, "brok", &Dropable, "brok2", &Broke, "got", GameServer()->LevelString(100, (int)getlv, 10, ':', ' '), "gotp", &m_Drop, NULL);
+		GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("专长 - 伐木工: (光头强不会升级)\n工具: {str:name}x{int:count} ({int:brok}/{int:brok2})\n砍伐进度: {str:got} / {int:gotp}\n\n{str:pbar}"),
+			"name", ItemName, "count", &Count, "brok", &Dropable, "brok2", &Broke, "got", GameServer()->LevelString(100, (int)getlv, 10, ':', ' '), "gotp", &m_Drop, "pbar", &TracingItemInfo, NULL);
 
 
 		if(m_Drop >= 100)
@@ -393,7 +404,7 @@ void CPickup::StartFarm(int ClientID)
 			if(Server()->GetItemSettings(ClientID, TITLEGLF))
 				Temp += 2;
 			GameServer()->GiveItem(ClientID, WOOD, Temp);
-		
+
 			// 加经验
 			GameServer()->m_apPlayers[ClientID]->AccData()->m_Exp += 10;
 			GameServer()->SendChatTarget_Localization(ClientID, -1, _("[Player] 经验+10 +并不存在的专长经验"), NULL);
@@ -422,24 +433,35 @@ void CPickup::StartFarm(int ClientID)
 void CPickup::MaterFarm(int ClientID, int MaterialID)
 {
 	if(Server()->GetMaterials(MaterialID) < 25)
-		return	GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("这里没有足够的材料. 至少需要25个"), NULL); 
-	
+		return	GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("这里没有足够的材料. 至少需要25个"), NULL);
+
 	if(Server()->GetItemCount(ClientID, MATERIAL) > 50000)
-		return	GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("物品栏内最多塞50000个附魔材料. 在物品栏对装备附魔，或者卖给商店吧!"), NULL); 
+		return	GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("物品栏内最多塞50000个附魔材料. 在物品栏对装备附魔，或者卖给商店吧!"), NULL);
 
 	m_Drop += 25;
-	GameServer()->CreateSound(m_Pos, 20); 
+	GameServer()->CreateSound(m_Pos, 20);
 
 	int LevelItem = 1+Server()->GetItemCount(ClientID, LOADEREXP)/g_Config.m_SvMaterExp;
 	int NeedExp = LevelItem*g_Config.m_SvMaterExp;
 	int Exp = Server()->GetItemCount(ClientID, LOADEREXP);
 	int Bonus = LevelItem*3 ;
 
-	float getlv = (m_Drop*100.0)/100;
-	GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("专长 - 萃取: {int:lvl}级 : {int:exp}/{int:expneed}经验\n奖励: 25+{int:bonus} : 萃取进度: {str:got} / {int:gotp}%"), 
-		"lvl", &LevelItem, "exp", &Exp, "expneed", &NeedExp, "bonus", &Bonus, "got", GameServer()->LevelString(100, (int)getlv, 10, ':', ' '), "gotp", &m_Drop, NULL);
+	int TracingItemCount = Server()->GetItemCount(ClientID, GameServer()->m_apPlayers[ClientID]->m_TracingItemId);
+	int GoalCount = GameServer()->m_apPlayers[ClientID]->m_TracingItemGoalCount;
+	char TracingItemInfo[128];
+	const char *ProgressBar = TracingItemCount < GoalCount ? GameServer()->LevelString(100, (int)((TracingItemCount * 100.0) / GoalCount), 4, '|', ' ') : "[  = FINISHED =  ]";
+	str_format(
+		TracingItemInfo, sizeof(TracingItemInfo), "追踪物品 %s: %s %d / %d",
+		Server()->GetItemName(ClientID, GameServer()->m_apPlayers[ClientID]->m_TracingItemId),
+		ProgressBar,
+		TracingItemCount,
+		GoalCount
+	);
 
-	
+	float getlv = (m_Drop*100.0)/100;
+	GameServer()->SendBroadcast_Localization(ClientID, 1000, 100, _("专长 - 萃取: {int:lvl}级 : {int:exp}/{int:expneed}经验\n奖励: 25+{int:bonus} : 萃取进度: {str:got} / {int:gotp}%\n\n{str:pbar}"),
+		"lvl", &LevelItem, "exp", &Exp, "expneed", &NeedExp, "bonus", &Bonus, "got", GameServer()->LevelString(100, (int)getlv, 10, ':', ' '), "gotp", &m_Drop, "pbar", &TracingItemInfo, NULL);
+
 	if(m_Drop >= 100)
 	{
 		Server()->SetMaterials(MaterialID, Server()->GetMaterials(MaterialID)-25);
