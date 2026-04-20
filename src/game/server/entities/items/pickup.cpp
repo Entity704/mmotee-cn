@@ -197,7 +197,7 @@ void CPickup::StartFarm(int ClientID)
 			ItemName = Server()->GetItemName(ClientID, DRAGONPIX);
 			Temp += random_int(45,60);
 		}
-		if(Server()->GetItemCount(ClientID, DIAMONDPIX))
+		else if(Server()->GetItemCount(ClientID, DIAMONDPIX))
 		{
 			Count = Server()->GetItemCount(ClientID, DIAMONDPIX);
 			Broke = 499*Server()->GetItemCount(ClientID, DIAMONDPIX);
