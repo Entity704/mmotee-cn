@@ -6665,7 +6665,7 @@ int CGameContext::GetDailyQuestUpgr(int Quest, int SubType)
 			return 50;
 
 		case EDailyQuests::COLLECT2:
-			return 40;
+			return 70;
 
 		case EDailyQuests::COLLECT3:
 			if(RandomNumber%6 == 4 || RandomNumber%6 == 5)
@@ -6673,7 +6673,7 @@ int CGameContext::GetDailyQuestUpgr(int Quest, int SubType)
 			return RandomNumber%500;
 
 		case EDailyQuests::COLLECT4:
-			return 150;
+			return 70;
 
 		default:
 			break;
