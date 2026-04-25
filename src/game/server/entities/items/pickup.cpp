@@ -9,6 +9,7 @@
 #include "pickup.h"
 
 #include <cmath>
+#include <algorithm>
 
 CPickup::CPickup(CGameWorld *pGameWorld, int Type, vec2 Pos, int SubType)
 : CEntity(pGameWorld, ENTTYPE_PICKUP)
@@ -268,6 +269,7 @@ void CPickup::StartFarm(int ClientID)
 		{
 			Temp += 5;
 		}
+
 		if(Server()->GetItemSettings(ClientID, TITLEWORKF))
 			Temp *= 2;
 
@@ -315,7 +317,7 @@ void CPickup::StartFarm(int ClientID)
 				GameServer()->GiveItem(ClientID, STANNUM, 1);
 			}
 
-			int MineCoreCount = Server()->GetItemCount(ClientID, MINECORE);
+			int MineCoreCount = std::min(50ull, Server()->GetItemCount(ClientID, MINECORE));
 			if(MineCoreCount)
 			{
 				float DragonProb = std::fmod(MineCoreCount * 0.1, 1.0);
@@ -509,6 +511,6 @@ void CPickup::Snap(int SnappingClient)
 			pObj->m_VelY = 0;
 			pObj->m_StartTick = Server()->Tick();
 			pObj->m_Type = WEAPON_HAMMER;
-		}		
+		}
 	}
 }
