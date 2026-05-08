@@ -1123,7 +1123,7 @@ void CGameContext::OnTick()
 		SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, "制作者名单:", NULL);
 		SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, "原作者:Kurosio", NULL);
 		SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, "制作者:天上的星星, Flower", NULL);
-		SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, "服主/管理:是（就叫“是”！）, EntityMC", NULL);
+		SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, "服主/管理:是（就叫“是”！）, EntityMC, 金蛋, Luvigs", NULL);
 		SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, "汉化:MC_TYH、Ninecloud及MMOTEE全体国服玩家", NULL);
 		SendChatTarget_World(-1, CHATCATEGORY_DEFAULT, "地图制作:天际, 卖鱼强", NULL);
 	}
@@ -1410,7 +1410,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					Buffer.append("\n\n");
 					Server()->Localization()->Format_L(Buffer, pLanguage, _("主要制作人员:\n原作者们:Najvlad, Rem1x, Matodor, Kurosio"), NULL);
 					Buffer.append("\n\n");
-					Server()->Localization()->Format_L(Buffer, pLanguage, _("地图修改：天际, 卖鱼强, Ninecloud, Flower\n开发者: 天上的星星, Flower, Ninecloud, Bamcane, EntityMC\n服务器管理: 是（“是”是人名）, EntityMC"), NULL);
+					Server()->Localization()->Format_L(Buffer, pLanguage, _("地图修改：天际, 卖鱼强, Ninecloud, Flower\n开发者: 天上的星星, Flower, Ninecloud, Bamcane, EntityMC\n服务器管理: 是（“是”是人名）, EntityMC, 金蛋, Luvigs"), NULL);
 					Buffer.append("\n\n");
 
 					SendMOTD(ClientID, Buffer.buffer());
