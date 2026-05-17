@@ -6066,7 +6066,7 @@ void CGameContext::UseItem(int ClientID, int ItemID, unsigned long long int Coun
 			PackOne = 15 * Count;
 			if(Server()->GetItemSettings(ClientID, TITLEPC))
 				PackOne *= 1.5;
-			if(Server()->GetItemSettings(ClientID, X2MONEYEXPVIP))
+			if(Server()->GetItemCount(ClientID, X2MONEYEXPVIP))
 				PackOne *= 2;
 			SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("{str:name} 使用了物品:{str:used} x{int:num} ,获得了 {int:pvars} 经验"),
 										"name", Server()->ClientName(ClientID), "used", Server()->GetItemName(ClientID, ItemID, false), "num", &Count, "pvars", &PackOne, NULL);
@@ -6077,7 +6077,7 @@ void CGameContext::UseItem(int ClientID, int ItemID, unsigned long long int Coun
 			PackOne = 25 * Count;
 			if(Server()->GetItemSettings(ClientID, TITLEPC))
 				PackOne *= 1.5;
-			if(Server()->GetItemSettings(ClientID, X2MONEYEXPVIP))
+			if(Server()->GetItemCount(ClientID, X2MONEYEXPVIP))
 				PackOne *= 2;
 			SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("{str:name} 使用了物品:{str:used} x{int:num} ,获得了 {int:pvars} 经验"),
 										"name", Server()->ClientName(ClientID), "used", Server()->GetItemName(ClientID, ItemID, false), "num", &Count, "pvars", &PackOne, NULL);
@@ -6088,7 +6088,7 @@ void CGameContext::UseItem(int ClientID, int ItemID, unsigned long long int Coun
 			PackOne = 10 * Count;
 			if(Server()->GetItemSettings(ClientID, TITLEPC))
 				PackOne *= 1.5;
-			if(Server()->GetItemSettings(ClientID, X2MONEYEXPVIP))
+			if(Server()->GetItemCount(ClientID, X2MONEYEXPVIP))
 				PackOne *= 2;
 			SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("{str:name} 使用了物品:{str:used} x{int:num} ,获得了 {int:pvars} 经验"),
 										"name", Server()->ClientName(ClientID), "used", Server()->GetItemName(ClientID, ItemID, false), "num", &Count, "pvars", &PackOne, NULL);
@@ -6099,7 +6099,7 @@ void CGameContext::UseItem(int ClientID, int ItemID, unsigned long long int Coun
 			PackOne = 35 * Count;
 			if(Server()->GetItemSettings(ClientID, TITLEPC))
 				PackOne *= 1.5;
-			if(Server()->GetItemSettings(ClientID, X2MONEYEXPVIP))
+			if(Server()->GetItemCount(ClientID, X2MONEYEXPVIP))
 				PackOne *= 2;
 			SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("{str:name} 使用了物品:{str:used} x{int:num} ,获得了 {int:pvars} 经验"),
 										"name", Server()->ClientName(ClientID), "used", Server()->GetItemName(ClientID, ItemID, false), "num", &Count, "pvars", &PackOne, NULL);
