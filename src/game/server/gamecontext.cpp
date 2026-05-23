@@ -2617,28 +2617,74 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 
 					m_apPlayers[ClientID]->m_LastChangeInfo = Server()->Tick();
 					int SelectItem = m_apPlayers[ClientID]->m_SelectItem;
-					if (Server()->GetItemCount(ClientID, MATERIAL) < (static_cast<unsigned long long>(1000)))
-						return SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("需要 1000 材料(material)"), NULL);
+					int count = chartoint(pReason, 250);
+					if (count <= 0) count = 1;
 
-					Server()->RemItem(ClientID, MATERIAL, 1000, -1);
+					int successCount = 0, failCount = 0;
+					int currentEnchant = Server()->GetItemEnchant(ClientID, SelectItem);
+					int finalEnchant = currentEnchant;
 
-					auto p = (float)(1.0f / (1 + Server()->GetItemEnchant(ClientID, SelectItem)));
-					// TODO
-					if (random_prob(p))
+					for (int i = 0; i < count; ++i)
 					{
-						Server()->SetItemEnchant(ClientID, SelectItem, Server()->GetItemEnchant(ClientID, SelectItem) + 1);
-
-						int Enchant = Server()->GetItemEnchant(ClientID, SelectItem);
-						SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT, _("{str:name} 成功地附魔了物品:{str:item} +{int:enchant}"),
-													"name", Server()->ClientName(ClientID), "item", Server()->GetItemName(ClientID, SelectItem), "enchant", &Enchant, NULL);
-
-						if (Enchant == 10 && !Server()->GetItemCount(ClientID, TITLEENCHANT))
+						if (Server()->GetItemCount(ClientID, MATERIAL) < 1000)
 						{
-							SendMail(ClientID, 3, TITLEENCHANT, 1);
+							SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("材料不足！需要1000个！"), NULL);
+							break;
+						}
+
+						Server()->RemItem(ClientID, MATERIAL, 1000, -1);
+
+						float p = 1.0f / (1 + currentEnchant);
+						if (random_prob(p))
+						{
+							currentEnchant++;
+							Server()->SetItemEnchant(ClientID, SelectItem, currentEnchant);
+							successCount++;
+							finalEnchant = currentEnchant;
+
+							if (currentEnchant == 10 && !Server()->GetItemCount(ClientID, TITLEENCHANT))
+								SendMail(ClientID, 3, TITLEENCHANT, 1);
+						}
+						else
+						{
+							failCount++;
 						}
 					}
-					else
-						SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("升级失败."), NULL);
+
+					if (successCount > 0)
+					{
+						SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
+							_("{str:name} 附魔了 {str:item}：成功 {int:success} 次，失败 {int:fail} 次，等级 +{int:enchant}"),
+							"name", Server()->ClientName(ClientID),
+							"item", Server()->GetItemName(ClientID, SelectItem),
+							"success", &successCount,
+							"fail", &failCount,
+							"enchant", &finalEnchant, NULL);
+					}
+					else if (failCount > 0)
+					{
+						if (failCount >= 50)
+						{
+							int pityCount = failCount / 50;
+							int newEnchant = currentEnchant + pityCount;
+							Server()->SetItemEnchant(ClientID, SelectItem, newEnchant);
+							SendChatTarget_Localization(-1, CHATCATEGORY_DEFAULT,
+								_("{str:name} 运气太差，附魔 {str:item} 失败了 {int:fail} 次；触发保底补偿 +{int:pity} 级"),
+								"name", Server()->ClientName(ClientID),
+								"item", Server()->GetItemName(ClientID, SelectItem),
+								"fail", &failCount,
+								"pity", &pityCount, NULL);
+
+							currentEnchant = newEnchant;
+							finalEnchant = newEnchant;
+						}
+						else
+						{
+							SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("附魔全部失败！共 {int:fail} 次"), "fail", &failCount, NULL);
+							if (failCount >= 40)
+								SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("还有幸运之子！？"), NULL);
+						}
+					}
 
 					m_apPlayers[ClientID]->m_SelectItem = -1;
 					ResetVotes(ClientID, ARMORMENU);
