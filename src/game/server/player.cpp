@@ -1023,7 +1023,7 @@ void CPlayer::TryRespawn()
 		case BOT_BOSSPIGKING:
 			m_pCharacter = new (AllocMemoryCell) CBossPig(&GameServer()->m_World);
 			AccData()->m_Level = 200 + random_int(3, 13);
-			
+
 			AccUpgrade()->m_Damage = GameServer()->GetBossLeveling()*10;
 			m_BigBot = true;
 			break;
@@ -1074,8 +1074,9 @@ void CPlayer::TryRespawn()
 			if (GameServer()->m_CityStart == 1)
 				AccUpgrade()->m_Damage = 400;
 			break;
-		default: 
-			dbg_msg("sys", "Invalid value %d in %s:%d", m_BotType, __FILE__, __LINE__); 
+		default:
+			dbg_msg("sys", "Invalid value %d in %s:%d", m_BotType, __FILE__, __LINE__);
+			return;
 			break;
 		}
 		Server()->SetMaxAmmo(m_ClientID, INFWEAPON_HAMMER, -1);
