@@ -2620,20 +2620,21 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					int count = chartoint(pReason, 250);
 					if (count <= 0) count = 1;
 
+					int totalMaterialNeeded = count * 1000;
+					if (Server()->GetItemCount(ClientID, MATERIAL) < totalMaterialNeeded)
+					{
+						SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("材料不足！附魔 {int:count} 次需要 {int:needed} 个材料！"), "count", &count, "needed", &totalMaterialNeeded, NULL);
+						return;
+					}
+
+					Server()->RemItem(ClientID, MATERIAL, totalMaterialNeeded, -1);
+
 					int successCount = 0, failCount = 0;
 					int currentEnchant = Server()->GetItemEnchant(ClientID, SelectItem);
 					int finalEnchant = currentEnchant;
 
 					for (int i = 0; i < count; ++i)
 					{
-						if (Server()->GetItemCount(ClientID, MATERIAL) < 1000)
-						{
-							SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("材料不足！需要1000个！"), NULL);
-							break;
-						}
-
-						Server()->RemItem(ClientID, MATERIAL, 1000, -1);
-
 						float p = 1.0f / (1 + currentEnchant);
 						if (random_prob(p))
 						{
