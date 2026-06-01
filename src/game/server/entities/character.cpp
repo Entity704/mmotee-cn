@@ -2015,8 +2015,8 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 						if(!Server()->GetItemCount(i, BOSSDIE))
 							GameServer()->GiveItem(i, BOSSDIE, 1);
 
-						if(Server()->GetItemSettings(m_pPlayer->GetCID(), SCHAT) != 2) 
-							GameServer()->SendChatTarget_Localization(i, CHATCATEGORY_DEFAULT, _("玩家之间分享掉落的物品"), NULL);		
+						if(Server()->GetItemSettings(m_pPlayer->GetCID(), SCHAT) != 2)
+							GameServer()->SendChatTarget_Localization(i, CHATCATEGORY_DEFAULT, _("玩家之间分享掉落的物品"), NULL);
 
 						switch (m_pPlayer->GetBotType())
 						{
@@ -2061,7 +2061,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 						case BOT_BOSSZOMBIE:
 							CreateDropRandom(MONEYBAG, random_int(500, 800), false, i, Force/(50+randforce));
 							CreateDropRandom(ZOMBIEEYE, random_int(3, 5), false, i, Force/(35+randforce));
-							CreateDropRandom(ZOMBIEBRAIN, 1, 40, From, Force/(50+randforce));
+							CreateDropRandom(ZOMBIEBRAIN, 1, 20, From, Force/(50+randforce));
 							CreateDropRandom(DRAGONORE, random_int(20, 30), false, i, Force/(12+randforce));
 							GameServer()->m_apPlayers[From]->GiveUpPoint(int(10/BossCount));
 							GameServer()->UpdateStats(From);
@@ -2095,11 +2095,11 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 				}
 				if(random_int(0, 3) == 1)
 					new CBonus(GameWorld(), m_Pos, Force/(40+random_int(0, 30)), 1, m_pPlayer->GetCID());
-					
+
 				new CBonus(GameWorld(), m_Pos, Force/(30+random_int(0, 30)), 0, m_pPlayer->GetCID());
 			}
 		}
-		
+
 		if(pFrom) new CFlyingPoint(GameWorld(), m_Pos, From, From, m_Core.m_Vel);
 
 		Die(From, Weapon);

@@ -2992,9 +2992,19 @@ void CServer::InitClientDB(int ClientID)
 
 void CServer::SyncPlayer(int ClientID, class CPlayer *pPlayer)
 {
-	for(auto& pGameServer : m_vpGameServer)
+	if(pPlayer)
 	{
-		pGameServer.second->SyncPlayer(ClientID, pPlayer);
+		int MapID = pPlayer->GetMapID();
+		auto It = m_vpGameServer.find(MapID);
+		if(It != m_vpGameServer.end())
+			It->second->SyncPlayer(ClientID, pPlayer);
+	}
+	else
+	{
+		for(auto& pGameServer : m_vpGameServer)
+		{
+			pGameServer.second->SyncPlayer(ClientID, nullptr);
+		}
 	}
 }
 

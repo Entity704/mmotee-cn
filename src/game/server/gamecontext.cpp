@@ -2618,9 +2618,8 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					m_apPlayers[ClientID]->m_LastChangeInfo = Server()->Tick();
 					int SelectItem = m_apPlayers[ClientID]->m_SelectItem;
 					int count = chartoint(pReason, 250);
-					if (count <= 0) count = 1;
 
-					int totalMaterialNeeded = count * 1000;
+					unsigned long long totalMaterialNeeded = count * 1000;
 					if (Server()->GetItemCount(ClientID, MATERIAL) < totalMaterialNeeded)
 					{
 						SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("材料不足！附魔 {int:count} 次需要 {int:needed} 个材料！"), "count", &count, "needed", &totalMaterialNeeded, NULL);
