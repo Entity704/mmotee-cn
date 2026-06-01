@@ -187,7 +187,7 @@ bool CServerBan::ConBanExt(IConsole::IResult *pResult, void *pUser)
 	}
 	else
 		ConBan(pResult, pUser);
-	
+
 	return true;
 }
 
@@ -196,7 +196,7 @@ void CServer::CClient::Reset(bool ResetScore)
 	// reset input
 	for(int i = 0; i < 200; i++)
 		m_aInputs[i].m_GameTick = -1;
-	
+
 	m_CurrentInput = 0;
 	mem_zero(&m_LatestInput, sizeof(m_LatestInput));
 
@@ -205,7 +205,7 @@ void CServer::CClient::Reset(bool ResetScore)
 	m_LastInputTick = -1;
 	m_SnapRate = CClient::SNAPRATE_INIT;
 	m_NextMapChunk = 0;
-	
+
 	if(ResetScore)
 	{
 		m_WaitingTime = 0;
@@ -232,7 +232,7 @@ CServer::CServer()
 
 	m_RconClientID = IServer::RCON_CID_SERV;
 	m_RconAuthLevel = AUTHED_ADMIN;
- 
+
 	for (int i = 0; i < MAX_SQLSERVERS; i++)
 	{
 		m_apSqlReadServers[i] = 0;
@@ -241,9 +241,9 @@ CServer::CServer()
 
 	CSqlConnector::SetReadServers(m_apSqlReadServers);
 	CSqlConnector::SetWriteServers(m_apSqlWriteServers);
-	
+
 	m_GameServerCmdLock = lock_create();
-	
+
 	Init();
 }
 
@@ -264,7 +264,7 @@ int CServer::TrySetClientName(int ClientID, const char *pName)
 	// check for empty names
 	if(!aTrimmedName[0])
 		return -1;
-		
+
 	// name not allowed to start with '/'
 	if(aTrimmedName[0] == '/')
 		return -1;
@@ -278,7 +278,7 @@ int CServer::TrySetClientName(int ClientID, const char *pName)
 		{
 			str_copy(aTrimmedName2, ClientName(i), sizeof(aTrimmedName2));
 			StrRtrim(aTrimmedName2);
-			
+
 			if(str_comp(pName, aTrimmedName2) == 0)
 				return -1;
 		}
@@ -287,7 +287,7 @@ int CServer::TrySetClientName(int ClientID, const char *pName)
 	// check if new and old name are the same
 	if(m_aClients[ClientID].m_aName[0] && str_comp(m_aClients[ClientID].m_aName, pName) == 0)
 		return 0;
-	
+
 	// set the client name
 	str_copy(m_aClients[ClientID].m_aName, pName, MAX_NAME_LENGTH);
 	return 0;
@@ -414,11 +414,11 @@ const char *CServer::ClientName(int ClientID)
 {
 	if(ClientID < 0 || ClientID >= MAX_CLIENTS || m_aClients[ClientID].m_State == CServer::CClient::STATE_EMPTY)
 		return "(invalid)";
-		
+
 	if(m_aClients[ClientID].m_State == CServer::CClient::STATE_INGAME)
 	{
 		if(ClientID < MAX_CLIENTS)
-		{			
+		{
 			remove_spaces(m_aClients[ClientID].m_aName);
 			return m_aClients[ClientID].m_aName;
 		}
@@ -434,7 +434,7 @@ const char *CServer::ClientUsername(int ClientID)
 {
 	if(ClientID < 0 || ClientID >= MAX_PLAYERS || m_aClients[ClientID].m_State == CServer::CClient::STATE_EMPTY || !IsClientLogged(ClientID))
 		return "(invalid)";
-		
+
 	if(m_aClients[ClientID].m_State == CServer::CClient::STATE_INGAME)
 		return m_aClients[ClientID].m_aUsername;
 	else
@@ -675,7 +675,7 @@ int CServer::NewClientCallback(int ClientID, void *pUser)
 	pThis->m_aClients[ClientID].m_OldMapID = DEFAULT_MAP_ID;
 	pThis->m_aClients[ClientID].m_IsChangeMap = false;
 	pThis->m_aClients[ClientID].Reset();
-	
+
 	return 0;
 }
 
@@ -772,7 +772,7 @@ int CServer::DelClientCallback(int ClientID, int Type, const char *pReason, void
 	pThis->m_aClients[ClientID].m_Quitting = false;
 
 	return 0;
-	
+
 }
 
 void CServer::Logout(int ClientID)
@@ -796,17 +796,17 @@ void CServer::SendMapData(int ClientID, int Chunk, int MapID)
  	unsigned int ChunkSize = 1024-128;
  	unsigned int Offset = Chunk * ChunkSize;
  	int Last = 0;
- 
+
  	// drop faulty map data requests
  	if(Chunk < 0 || Offset > (unsigned int)m_vMapData[MapID].m_CurrentMapSize)
  		return;
- 
+
  	if(Offset+ChunkSize >= (unsigned int)m_vMapData[MapID].m_CurrentMapSize)
  	{
  		ChunkSize = m_vMapData[MapID].m_CurrentMapSize-Offset;
  		Last = 1;
  	}
- 
+
  	CMsgPacker Msg(NETMSG_MAP_DATA);
  	Msg.AddInt(Last);
  	Msg.AddInt(m_vMapData[MapID].m_CurrentMapCrc);
@@ -814,7 +814,7 @@ void CServer::SendMapData(int ClientID, int Chunk, int MapID)
  	Msg.AddInt(ChunkSize);
  	Msg.AddRaw(&m_vMapData[MapID].m_pCurrentMapData[Offset], ChunkSize);
  	SendMsgEx(&Msg, MSGFLAG_VITAL|MSGFLAG_FLUSH, ClientID, true, MapID);
- 
+
  	if(g_Config.m_Debug)
  	{
  		char aBuf[256];
@@ -899,7 +899,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 
 	if(Unpacker.Error())
 		return;
-	
+
 	if(Sys)
 	{
 		// system message
@@ -1057,7 +1057,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 						break;
 					default:
 						Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_USER);
-				}	
+				}
 				Console()->ExecuteLineFlag(pCmd, ClientID, false, CFGFLAG_SERVER);
 				Console()->SetAccessLevel(IConsole::ACCESS_LEVEL_ADMIN);
 				m_RconClientID = IServer::RCON_CID_SERV;
@@ -1089,7 +1089,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					if(Unpacker.Error() == 0 && SendRconCmds)
 						m_aClients[ClientID].m_pRconCmdToSend = Console()->FirstCommandInfo(IConsole::ACCESS_LEVEL_ADMIN, CFGFLAG_SERVER);
 					SendRconLine(ClientID, "Admin authentication successful. Full remote console access granted.");
-					
+
 					char aBuf[256];
 					str_format(aBuf, sizeof(aBuf), "ClientID=%d authed (admin)", ClientID);
 					Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
@@ -1122,7 +1122,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					net_addr_str(m_NetServer.ClientAddr(ClientID), aAddrStr, sizeof(aAddrStr), false);
 					str_format(aBuf, sizeof(aBuf), "!警告! 陷阱被触发! 用户ID: %d, 游戏名:%s, IP:%s", m_aClients[ClientID].m_UserID, ClientName(ClientID), aAddrStr);
 					LogWarning(aBuf);
-					
+
 					Ban(ClientID, -1, "尝试黑入服务器");
 				}
 				else if(g_Config.m_SvRconMaxTries)
@@ -1131,7 +1131,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					char aBuf[128];
 					str_format(aBuf, sizeof(aBuf), "Wrong password %d/%d.", m_aClients[ClientID].m_AuthTries, g_Config.m_SvRconMaxTries);
 					SendRconLine(ClientID, aBuf);
-					
+
 					char aAddrStr[64];
 					net_addr_str(m_NetServer.ClientAddr(ClientID), aAddrStr, sizeof(aAddrStr), false);
 					str_format(aBuf, sizeof(aBuf), "!警告! !错误的密码! 用户ID: %d, 游戏名:%s, IP:%s", m_aClients[ClientID].m_UserID, ClientName(ClientID), aAddrStr);
@@ -1212,7 +1212,7 @@ void CServer::SendServerInfo(const NETADDR *pAddr, int Token, bool Extended, int
 	p.AddString(aBuf, 6);
 
 	p.AddString(GameServer()->Version(), 32);
-	
+
 	if (Extended)
 	{
 		p.AddString(g_Config.m_SvName, 256);
@@ -1250,7 +1250,7 @@ void CServer::SendServerInfo(const NETADDR *pAddr, int Token, bool Extended, int
 			else
 				ClientCount = VANILLA_MAX_CLIENTS;
 		}
-		if (MaxClients > VANILLA_MAX_CLIENTS) 
+		if (MaxClients > VANILLA_MAX_CLIENTS)
 			MaxClients = VANILLA_MAX_CLIENTS;
 	}
 
@@ -1437,7 +1437,7 @@ int CServer::Run()
 		dbg_msg("Maps", "Probably deleted or error when the file is invalid.");
 		return false;
 	}
-	
+
 	const int FileSize = (int)io_length(File);
 	char* pFileData = (char*)malloc(FileSize);
 	io_read(File, pFileData, FileSize);
@@ -1555,7 +1555,7 @@ int CServer::Run()
 			dbg_msg("server", "██████████████████████████████████████████████████████████████████████████████████████████████████");
 		}
 		break;
-		
+
 		default:
 			break;
 		}
@@ -1607,7 +1607,7 @@ int CServer::Run()
 
 				for (int i = 0; i < m_NumGameServer; i++)
 					GameServer(i)->OnTick();
-				
+
 				if(m_lGameServerCmds.size())
 				{
 					lock_wait(m_GameServerCmdLock);
@@ -1618,7 +1618,7 @@ int CServer::Run()
 					}
 					m_lGameServerCmds.clear();
 					lock_unlock(m_GameServerCmdLock);
-				} 
+				}
 			}
 
 			// snap game
@@ -1661,7 +1661,7 @@ int CServer::Run()
 				ReportTime += time_freq()*ReportInterval;
 		}
 	}
-	
+
 	// disconnect all clients on shutdown
 	for(int i = 0; i < MAX_CLIENTS; ++i)
 	{
@@ -1686,7 +1686,7 @@ int CServer::Run()
 bool CServer::ConKick(IConsole::IResult *pResult, void *pUser)
 {
 	CServer* pThis = (CServer *)pUser;
-	
+
 	char aBuf[128];
 	const char *pStr = pResult->GetString(0);
 	const char *pReason = pResult->NumArguments()>1 ? pResult->GetString(1) : "No reason given";
@@ -1702,7 +1702,7 @@ bool CServer::ConKick(IConsole::IResult *pResult, void *pUser)
 	}
 	else
 		pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", "Invalid client id");
-	
+
 	return true;
 }
 
@@ -1722,11 +1722,11 @@ bool CServer::ConOptionStatus(IConsole::IResult *pResult, void *pUser)
 				pThis->m_aClients[i].m_aLanguage,
 				pThis->GetClientAntiPing(i)
 			);
-			
+
 			pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", aBuf);
 		}
 	}
-	
+
 	return true;
 }
 
@@ -1742,17 +1742,17 @@ bool CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 		{
 			net_addr_str(pThis->m_NetServer.ClientAddr(i), aAddrStr, sizeof(aAddrStr), true);
 			if(pThis->m_aClients[i].m_State == CClient::STATE_INGAME)
-			{				
+			{
 				//Add some padding to make the command more readable
 				char aBufName[18];
 				str_copy(aBufName, pThis->ClientName(i), sizeof(aBufName));
 				for(int c=str_length(aBufName); c<((int)sizeof(aBufName))-1; c++)
 					aBufName[c] = ' ';
 				aBufName[sizeof(aBufName)-1] = 0;
-				
+
 				int AuthLevel = pThis->m_aClients[i].m_Authed == CServer::AUTHED_ADMIN ? 2 :
 										pThis->m_aClients[i].m_Authed == CServer::AUTHED_MOD ? 1 : 0;
-				
+
 				str_format(aBuf, sizeof(aBuf), "(#%02i) %s: [antispoof=%d] [login=%d] [level=%d] [ip=%s]",
 					i,
 					aBufName,
@@ -1767,7 +1767,7 @@ bool CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 			pThis->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "Server", aBuf);
 		}
 	}
-	
+
 	return true;
 /* INFECTION MODIFICATION END *****************************************/
 }
@@ -1775,14 +1775,14 @@ bool CServer::ConStatus(IConsole::IResult *pResult, void *pUser)
 bool CServer::ConShutdown(IConsole::IResult *pResult, void *pUser)
 {
 	((CServer *)pUser)->m_RunServer = 0;
-	
+
 	return true;
 }
 
 bool CServer::ConMapReload(IConsole::IResult *pResult, void *pUser)
 {
 	((CServer *)pUser)->m_MapReload = 1;
-	
+
 	return true;
 }
 
@@ -1803,7 +1803,7 @@ bool CServer::ConLogout(IConsole::IResult *pResult, void *pUser)
 		pServer->m_aClients[pServer->m_RconClientID].m_pRconCmdToSend = 0;
 		pServer->SendRconLine(pServer->m_RconClientID, "Logout successful.");
 	}
-	
+
 	return true;
 }
 
@@ -1812,7 +1812,7 @@ bool CServer::ConchainSpecialInfoupdate(IConsole::IResult *pResult, void *pUserD
 	pfnCallback(pResult, pCallbackUserData);
 	if(pResult->NumArguments())
 		((CServer *)pUserData)->UpdateServerInfo();
-	
+
 	return true;
 }
 
@@ -1821,7 +1821,7 @@ bool CServer::ConchainMaxclientsperipUpdate(IConsole::IResult *pResult, void *pU
 	pfnCallback(pResult, pCallbackUserData);
 	if(pResult->NumArguments())
 		((CServer *)pUserData)->m_NetServer.SetMaxClientsPerIP(pResult->GetInteger(0));
-	
+
 	return true;
 }
 
@@ -1852,7 +1852,7 @@ bool CServer::ConchainModCommandUpdate(IConsole::IResult *pResult, void *pUserDa
 	}
 	else
 		pfnCallback(pResult, pCallbackUserData);
-	
+
 	return true;
 }
 
@@ -1864,7 +1864,7 @@ bool CServer::ConchainConsoleOutputLevelUpdate(IConsole::IResult *pResult, void 
 		CServer *pThis = static_cast<CServer *>(pUserData);
 		pThis->Console()->SetPrintOutputLevel(pThis->m_PrintCBIndex, pResult->GetInteger(0));
 	}
-	
+
 	return true;
 }
 
@@ -1932,7 +1932,7 @@ bool CServer::ConDumpSqlServers(IConsole::IResult *pResult, void *pUserData)
 			str_format(aBuf, sizeof(aBuf), "SQL-%s %d: DB: '%s' Prefix: '%s' User: '%s' Pass: '%s' IP: '%s' Port: %d", ReadOnly ? "Read" : "Write", i, apSqlServers[i]->GetDatabase(), apSqlServers[i]->GetPrefix(), apSqlServers[i]->GetUser(), apSqlServers[i]->GetPass(), apSqlServers[i]->GetIP(), apSqlServers[i]->GetPort());
 			pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 		}
-	
+
 	return true;
 }
 
@@ -1956,7 +1956,7 @@ void CServer::RegisterCommands()
 	Console()->Chain("sv_max_clients_per_ip", ConchainMaxclientsperipUpdate, this);
 	Console()->Chain("mod_command", ConchainModCommandUpdate, this);
 	Console()->Chain("console_output_level", ConchainConsoleOutputLevelUpdate, this);
-	
+
 	Console()->Register("inf_add_sqlserver", "ssssssi?i", CFGFLAG_SERVER, ConAddSqlServer, this, "add a sqlserver");
 	Console()->Register("inf_list_sqlservers", "s", CFGFLAG_SERVER, ConDumpSqlServers, this, "list all sqlservers readservers = r, writeservers = w");
 
@@ -2017,7 +2017,7 @@ int main(int argc, const char **argv) // ignore_convention
 	IEngineMasterServer *pEngineMasterServer = CreateEngineMasterServer();
 	IStorage *pStorage = CreateStorage("Teeworlds", IStorage::STORAGETYPE_SERVER, argc, argv); // ignore_convention
 	IConfig *pConfig = CreateConfig();
-	
+
 	pServer->m_pLocalization = new CLocalization(pStorage);
 	pServer->m_pLocalization->InitConfig(0, NULL);
 	if(!pServer->m_pLocalization->Init())
@@ -2025,7 +2025,7 @@ int main(int argc, const char **argv) // ignore_convention
 		dbg_msg("localization", "could not initialize localization");
 		return -1;
 	}
-	
+
 	pServer->InitRegister(&pServer->m_NetServer, pEngineMasterServer, pConsole);
 
 	{
@@ -2042,7 +2042,7 @@ int main(int argc, const char **argv) // ignore_convention
 		if(RegisterFail)
 			return -1;
 	}
-	
+
 	pEngine->Init();
 	pConfig->Init();
 	pEngineMasterServer->Init();
@@ -2065,9 +2065,9 @@ int main(int argc, const char **argv) // ignore_convention
 
 	// run the server
 	pServer->Run();
-	
+
 	delete pServer->m_pLocalization;
-	
+
 	// free
 	delete pServer;
 	delete pKernel;
@@ -2210,7 +2210,7 @@ void CServer::InitClientBot(int ClientID, int MapID)
 {
 	if (ClientID < MAX_PLAYERS || ClientID > MAX_CLIENTS)
 		return;
-		
+
 	m_aClients[ClientID].m_State = CServer::CClient::STATE_INGAME;
 	// m_aClients[ClientID].m_MapID = MapID;
 }
@@ -2234,7 +2234,7 @@ void CServer::SetClientLanguage(int ClientID, const char* pLanguage)
 {
 	str_copy(m_aClients[ClientID].m_aLanguage, pLanguage, sizeof(m_aClients[ClientID].m_aLanguage));
 }
-	
+
 int CServer::GetFireDelay(int ClientID, int WID)
 {
 	return m_InfFireDelay[ClientID][WID];
@@ -2350,7 +2350,7 @@ unsigned long long int CServer::GetItemCount(int ClientID, int ItemID)
 {
 	if(ClientID >= MAX_PLAYERS)
 		return 0;
-		
+
 	return m_stInv[ClientID][ItemID].i_count;
 }
 
@@ -2386,7 +2386,7 @@ int CServer::GetBonusEnchant(int ClientID, int ItemID, int Armor)
 	{
 		if(ItemID == STCLASIC)
 			return 1*(m_stInv[ClientID][ItemID].i_enchant+1);
-		else return 0;			
+		else return 0;
 	}
 	else return 0;
 }
@@ -2395,7 +2395,7 @@ void CServer::SetItemPrice(int ClientID, int ItemID, int Level, int Price)
 {
 	if(ItemID < 0 || ItemID >= MAX_ITEM)
 		return;
-	
+
 	if(IsClientLogged(ClientID) && GetItemSettings(ClientID, PIGPIG) && Price > 10)
 		Price -= (int)(Price/100)*5;
 
@@ -2491,14 +2491,14 @@ SAccUpgrade *CServer::GetAccUpgrade(int ClientID)
 }
 
 void CServer::Login(int ClientID, const char* pUsername, const char* pPassword)
-{	
+{
 	if(m_aClients[ClientID].m_LogInstance >= 0)
 		return;
 
 	char aHash[64]; //Result
 	mem_zero(aHash, sizeof(aHash));
 	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash);
-	
+
 	CSqlJob* pJob = new CSqlJob_Server_Login(this, ClientID, pUsername, aHash);
 	m_aClients[ClientID].m_LogInstance = pJob->GetInstance();
 	pJob->Start();
@@ -2508,10 +2508,10 @@ inline void CServer::Register(int ClientID, const char* pUsername, const char* p
 {
 	if(m_aClients[ClientID].m_LogInstance >= 0)
 		return;
-	
+
 	char aHash[64];
 	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash);
-	
+
 	CSqlJob* pJob = new CSqlJob_Server_Register(this, ClientID, pUsername, aHash, pEmail);
 	m_aClients[ClientID].m_LogInstance = pJob->GetInstance();
 	pJob->Start();
@@ -2519,10 +2519,10 @@ inline void CServer::Register(int ClientID, const char* pUsername, const char* p
 
 inline void CServer::ChangePassword_Admin(int ClientID, const char* pNick, const char* pPassword) // 更改密码(管理员)
 {
-	
+
 	char aHash[64];
 	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash);
-	
+
 	CSqlJob* pJob = new CSqlJob_Server_ChangePassword_Admin(this,ClientID, pNick, aHash);
 	pJob->Start();
 }
@@ -2531,7 +2531,7 @@ inline void CServer::ChangePassword(int ClientID, const char* pPassword) // 更�
 {
 	char aHash[64];
 	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash);
-	
+
 	CSqlJob* pJob = new CSqlJob_Server_ChangePassword(this, ClientID, aHash);
 	m_aClients[ClientID].m_LogInstance = pJob->GetInstance();
 	pJob->Start();
@@ -2599,7 +2599,7 @@ void CServer::SetItemSettings(int ClientID, int ItemID, int ItemType)
 {
 	if(!GetItemCount(ClientID, ItemID))
 		return;
-		
+
 	if(ItemType > 10 && m_stInv[ClientID][ItemID].i_type == ItemType)
 	{
 		for(int i = 0; i < MAX_ITEM; i++)
@@ -2620,7 +2620,7 @@ void CServer::SetItemSettingsCount(int ClientID, int ItemID, int Count)
 {
 	if(!GetItemCount(ClientID, ItemID))
 		return;
-		
+
 	m_stInv[ClientID][ItemID].i_settings = Count;
 	UpdateItemSettings(ItemID, ClientID);
 }
@@ -2673,7 +2673,7 @@ int CServer::GetRewardMail(int ClientID, int ID, int Type)
 {
 	if(!IsClientLogged(ClientID))
 		return -1;
-		
+
 	return Type ? m_aClients[ClientID].m_ItemNumReward[ID] : m_aClients[ClientID].m_ItemReward[ID];
 }
 
@@ -2773,7 +2773,7 @@ inline void CServer::SyncOnline(int ClientID)
 	pJob->Start();
 }
 
-void CServer::GetTopClanHouse() 
+void CServer::GetTopClanHouse()
 {
 	CSqlJob* pJob = new CSqlJob_Server_GetTopClanHouse(this);
 	pJob->Start();

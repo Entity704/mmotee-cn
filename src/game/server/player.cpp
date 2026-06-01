@@ -478,7 +478,7 @@ void CPlayer::Tick()
 				GameServer()->SendGuide(m_ClientID, GameServer()->m_BossType);
 			else if (GameServer()->m_BossStart)
 				GameServer()->SendBroadcast_LBossed(m_ClientID, 250, 100);
-			
+
 			if (!GameServer()->GetBossCount())
 				GameServer()->m_WinWaitBoss = 2;
 
@@ -1269,8 +1269,8 @@ const char *CPlayer::TitleGot()
 	else if(Server()->GetItemSettings(m_ClientID, TITLEPC))
 		return "公社";
 	//else if(Server()->GetItemSettings(m_ClientID, TITLEMOON))
-	//	return "~〇~ Moon ~〇~";	
-	else 
+	//	return "~〇~ Moon ~〇~";
+	else
 		return "新玩家";
 }
 
@@ -1285,7 +1285,7 @@ bool CPlayer::IsBoss()
 	case BOT_BOSSZOMBIE:
 	case BOT_BOSSSKELET:
 		return true;
-	
+
 	default:
 		return false;
 	}
@@ -1295,7 +1295,7 @@ bool CPlayer::GetSnap(int EntityID)
 {
 	if(EntityID >= NUM_ENTTYPES || EntityID < 0)
 		return false;
-	
+
 	return m_aShouldSnap[EntityID];
 }
 
@@ -1303,7 +1303,7 @@ void CPlayer::SetSnap(int EntityID, bool Snap)
 {
 	if(EntityID >= NUM_ENTTYPES || EntityID < 0)
 		return;
-	
+
 	m_aShouldSnap[EntityID] = Snap;
 }
 
@@ -1335,7 +1335,7 @@ void CPlayer::UpdateSnap()
 		SetSnap(ENTTYPE_PICKUP, false);
 		SetSnap(ENTTYPE_GROWINGEXPLOSION, false);
 		SetSnap(ENTTYPE_BONUS, false);
-		SetSnap(ENTTYPE_BIOLOGIST_MINE, false);	
+		SetSnap(ENTTYPE_BIOLOGIST_MINE, false);
 		[[fallthrough]];
 	}
 	case 1:
@@ -1348,7 +1348,7 @@ void CPlayer::UpdateSnap()
 		SetSnap(ENTTYPE_HEALTHHEALER, false);
 		SetSnap(ENTTYPE_SWORD, false);
 		break;
-		
+
 	default:
 		break;
 	}

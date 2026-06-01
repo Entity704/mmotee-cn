@@ -1029,14 +1029,14 @@ void CGameContext::AreaTick()
 
 void CGameContext::OnTick()
 {
-	
+
 	// copy tuning
 	m_World.m_Core.m_Tuning = m_Tuning;
 	m_World.Tick();
 
 	// if(world.paused) // make sure that the game object always updates
 	m_pController->Tick();
-	
+
 	for(int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if(!Server()->ClientIngame(i) || !m_apPlayers[i] || m_apPlayers[i]->GetMapID() != GetMapID())
@@ -2952,7 +2952,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 						StartBoss(ClientID, clamp(chartoint(pReason, 120), 20, 120), i);
 						return;
 					}
-					
+
 					str_format(aBuf, sizeof(aBuf), "cbs%d", i);
 					if (str_comp(aCmd, aBuf) == 0)
 					{
@@ -3339,11 +3339,11 @@ void CGameContext::GiveItem(int ClientID, int ItemID, int Count, int Enchant)
 				int Count = Server()->GetItemCount(ClientID, ItemID);
 				int Need = GetDailyQuestNeed((ItemID == KILLQUEST) ? EDailyQuests::QUESTTYPE2_KILL : EDailyQuests::QUESTTYPE3_CHALLENGE, (ItemID == KILLQUEST) ? 0 : EDailyQuests::CHALLENGE4);
 				if(Count % 50 == 0 && Count < Need)
-					SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("[每日任务] {str:item} [{int:num}/{int:need}]"), 
-					"item", Server()->GetItemName(ClientID, ItemID), 
+					SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("[每日任务] {str:item} [{int:num}/{int:need}]"),
+					"item", Server()->GetItemName(ClientID, ItemID),
 					"num", &Count,
 					"need", &Need);
-				
+
 				if(Count == Need)
 				{
 					SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, (ItemID == KILLQUEST) ? _("[每日任务] 击杀任务已完成！") : _("[每日任务] 挑战任务已完成！"));
@@ -3556,7 +3556,7 @@ void CGameContext::CreateItem(int ClientID, int ItemID, int Count)
 		{
 			GiveItem(ClientID, TITLESUMMER, 1);
 		}
-		
+
 	}
 	break;
 	case JUMPIMPULS:
@@ -3859,7 +3859,7 @@ void CGameContext::CreateItem(int ClientID, int ItemID, int Count)
 			SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("为了合成你需要 {str:need}"), "need", "核心基座x2, 龙矿x500, 金券x500", NULL);
 			return;
 		}
-		
+
 		Server()->RemItem(ClientID, COREBASE, 2, -1);
 		Server()->RemItem(ClientID, DRAGONORE, 500, -1);
 		Server()->RemItem(ClientID, GOLDTICKET, 500, -1);
@@ -3921,7 +3921,7 @@ void CGameContext::CreateItem(int ClientID, int ItemID, int Count)
 			Server()->GetItemCount(ClientID, ZOMBIEEYE) < (static_cast<unsigned long long>(100 ))||
 			Server()->GetItemCount(ClientID, SKELETSBONE) < (static_cast<unsigned long long>(100)))
 		{
-			SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("为了合成你需要 {str:need}"), "need", 
+			SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("为了合成你需要 {str:need}"), "need",
 			"守卫锤子x1, " \
 			"被污染的4种物品(猪、Kwah头、Kwah脚、Boomer尸体)x5000, " \
 			"龙矿x2080424, " \
@@ -3951,7 +3951,7 @@ void CGameContext::CreateItem(int ClientID, int ItemID, int Count)
 			Server()->GetItemCount(ClientID, ZOMBIEEYE) < (static_cast<unsigned long long>(100 ))||
 			Server()->GetItemCount(ClientID, SKELETSBONE) < (static_cast<unsigned long long>(100)))
 		{
-			SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("为了合成你需要 {str:need}"), "need", 
+			SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("为了合成你需要 {str:need}"), "need",
 			"被污染的守卫头x50, " \
 			"被污染的4种物品(猪、Kwah头、Kwah脚、Boomer尸体)x5000, " \
 			"龙矿x4240208, " \
@@ -3979,7 +3979,7 @@ void CGameContext::CreateItem(int ClientID, int ItemID, int Count)
 			SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("为了合成你需要 {str:need}"), "need", "龙矿x50000000, 闪电模块x1, 电子模块x1", NULL);
 			return;
 		}
-		
+
 		Server()->RemItem(ClientID, DRAGONORE, 50000000, -1);
 	}
 	break;
@@ -4145,7 +4145,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 
 		if (Server()->GetClanID(ClientID) > 0)
 			AddVoteMenu_Localization(ClientID, CLAN, MENUONLY, "☞ 公会菜单 {str:clan}", "clan", Server()->ClientClan(ClientID));
-		
+
 		if (Server()->GetItemCount(ClientID, JUICER))
 		{
 			AddVote("······················· ", "null", ClientID);
@@ -4411,7 +4411,7 @@ void CGameContext::ResetVotes(int ClientID, int Type)
 			CreateNewShop(ClientID, LIGHTNINGLASER, 1, 0, 0);
 
 		AddVote("························", "null", ClientID);
-		
+
 		const char *Data;
 
 		Data = "全部";
