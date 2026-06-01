@@ -5778,9 +5778,9 @@ void CGameContext::OnInit(int MapID)
 	m_pConsole = Kernel()->RequestInterface<IConsole>();
 	m_World.SetGameServer(this);
 	m_Events.SetGameServer(this);
-	
+
 	m_MapID = MapID;
-	m_CityStart = g_Config.m_SvCityStart; // for now
+	m_CityStart = MapID;
 
 	for (int i = 0; i < NUM_NETOBJTYPES; i++)
 		Server()->SnapSetStaticsize(i, m_NetObjHandler.GetObjSize(i));
