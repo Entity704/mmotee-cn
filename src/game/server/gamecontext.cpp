@@ -1280,6 +1280,9 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 		return;
 	}
 
+	if (!pPlayer)
+		return;
+
 	if (Server()->ClientIngame(ClientID))
 	{
 		if (MsgID == NETMSGTYPE_CL_SAY)
@@ -5875,7 +5878,7 @@ void CGameContext::OnSnap(int ClientID)
 	m_pController->Snap(ClientID);
 	for(auto& arpPlayer : m_apPlayers)
 	{
-		if(arpPlayer)
+		if(arpPlayer && arpPlayer->GetMapID() == GetMapID())
 			arpPlayer->Snap(ClientID);
 	}
 

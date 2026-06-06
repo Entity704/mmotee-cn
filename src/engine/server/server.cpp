@@ -2454,7 +2454,7 @@ void CServer::ChangeClientMap(int ClientID, int MapID)
 
 int CServer::GetClientMapID(int CID)
 {
-	if(CID < 0 || CID >= MAX_CLIENTS || m_aClients[CID].m_State < CClient::STATE_READY)
+	if(CID < 0 || CID >= MAX_CLIENTS || m_aClients[CID].m_State < CClient::STATE_CONNECTING)
 		return DEFAULT_MAP_ID;
 	return m_aClients[CID].m_MapID;
 }
@@ -2995,6 +2995,11 @@ void CServer::SyncPlayer(int ClientID, class CPlayer *pPlayer)
 	if(pPlayer)
 	{
 		int MapID = pPlayer->GetMapID();
+		for(auto &pGameServer : m_vpGameServer)
+		{
+			if(pGameServer.first != MapID)
+				pGameServer.second->SyncPlayer(ClientID, nullptr);
+		}
 		auto It = m_vpGameServer.find(MapID);
 		if(It != m_vpGameServer.end())
 			It->second->SyncPlayer(ClientID, pPlayer);
