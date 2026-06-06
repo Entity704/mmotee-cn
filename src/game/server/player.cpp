@@ -777,7 +777,16 @@ void CPlayer::Snap(int SnappingClient)
 		return;
 	if (!IsBot())
 	{
-		pPlayerInfo->m_Latency = SnappingClient == -1 ? m_Latency.m_Min : GameServer()->m_apPlayers[SnappingClient]->m_aActLatency[m_ClientID];
+		if(SnappingClient == -1)
+			pPlayerInfo->m_Latency = m_Latency.m_Min;
+		else
+		{
+			CPlayer *pSnappingPlayer = nullptr;
+			const int SnappingMapID = Server()->GetClientMapID(SnappingClient);
+			if(CGameContext *pSnapContext = static_cast<CGameContext *>(Server()->GameServer(SnappingMapID)))
+				pSnappingPlayer = pSnapContext->m_apPlayers[SnappingClient];
+			pPlayerInfo->m_Latency = pSnappingPlayer ? pSnappingPlayer->m_aActLatency[m_ClientID] : m_Latency.m_Min;
+		}
 	}
 	else
 	{
