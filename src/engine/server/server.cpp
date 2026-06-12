@@ -1439,8 +1439,9 @@ int CServer::Run()
 	}
 
 	const int FileSize = (int)io_length(File);
-	char* pFileData = (char*)malloc(FileSize);
+	char* pFileData = (char*)malloc(FileSize + 1);
 	io_read(File, pFileData, FileSize);
+	pFileData[FileSize] = '\0';
 	io_close(File);
 
 	// parse json data
