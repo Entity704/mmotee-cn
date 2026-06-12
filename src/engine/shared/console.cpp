@@ -12,6 +12,8 @@
 #include "console.h"
 #include "linereader.h"
 
+#include <time.h>
+
 // todo: rework this
 
 const char *CConsole::CResult::GetString(unsigned Index)
@@ -227,13 +229,21 @@ void CConsole::SetPrintOutputLevel(int Index, int OutputLevel)
 
 void CConsole::Print(int Level, const char *pFrom, const char *pStr)
 {
-	dbg_msg(pFrom ,"%s", pStr);
+	time_t Now = time(NULL);
+	struct tm *pTM = localtime(&Now);
+	char aTimeStamp[16];
+	strftime(aTimeStamp, sizeof(aTimeStamp), "[%H:%M:%S]", pTM);
+
+	char aTimeStampedMsg[1024];
+	str_format(aTimeStampedMsg, sizeof(aTimeStampedMsg), "%s %s", aTimeStamp, pStr);
+	dbg_msg(pFrom, "%s", aTimeStampedMsg);
+
 	for(int i = 0; i < m_NumPrintCB; ++i)
 	{
 		if(Level <= m_aPrintCB[i].m_OutputLevel && m_aPrintCB[i].m_pfnPrintCallback)
 		{
 			char aBuf[1024];
-			str_format(aBuf, sizeof(aBuf), "[%s]: %s", pFrom, pStr);
+			str_format(aBuf, sizeof(aBuf), "%s[%s]: %s", aTimeStamp, pFrom, pStr);
 			m_aPrintCB[i].m_pfnPrintCallback(aBuf, m_aPrintCB[i].m_pPrintCallbackUserdata);
 		}
 	}
