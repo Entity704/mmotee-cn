@@ -1224,7 +1224,7 @@ void CServer::SendServerInfo(const NETADDR *pAddr, int Token, bool Extended, int
 		}
 		else
 		{
-			str_format(aBuf, sizeof(aBuf), "%s [%d/%d]", g_Config.m_SvName, ClientCount, VANILLA_MAX_CLIENTS);
+			str_format(aBuf, sizeof(aBuf), "%s [%d/%d]", g_Config.m_SvName, ClientCount, MAX_PLAYERS);
 			p.AddString(aBuf, 64);
 		}
 	}
