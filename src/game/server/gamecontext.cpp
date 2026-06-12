@@ -5870,7 +5870,7 @@ void CGameContext::OnInit(int MapID)
 
 void CGameContext::OnShutdown()
 {
-	for (int i = 0; i < g_Config.m_SvMaxClients; i++)
+	for (int i = 0; i < MAX_CLIENTS; i++)
 	{
 		if (!m_apPlayers[i])
 			continue;
@@ -6015,7 +6015,7 @@ void CGameContext::UpdateBotInfo(int ClientID)
 
 void CGameContext::CreateBot(int ClientID, int BotType, int BotSubType)
 {
-	int BotClientID = g_Config.m_SvMaxClients - MAX_BOTS + ClientID;
+	int BotClientID = MAX_PLAYERS + ClientID;
 	if (m_apPlayers[BotClientID])
 		return;
 

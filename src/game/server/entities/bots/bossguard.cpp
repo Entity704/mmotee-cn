@@ -92,7 +92,7 @@ void CBossGuard::TickBotAI()
 	bool PlayerNFound = false;
 
 	m_BotClientIDFix = -1;
-	for (int i = 0; i < g_Config.m_SvMaxClients; i++)
+	for (int i = 0; i < MAX_CLIENTS; i++)
 	{
 		CPlayer *pPlayer = GameServer()->m_apPlayers[i];
 		if (!pPlayer || !pPlayer->GetCharacter() || pPlayer->IsBot() || pPlayer->IsBoss() || !pPlayer->m_InBossed)
