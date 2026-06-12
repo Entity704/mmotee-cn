@@ -373,8 +373,8 @@
 			"value": "You Bought."
 		},
 		{
-			"key": "/login <用户名> <密码> - 登录账户",
-			"value": "/login <username> <password> - login account"
+			"key": "/login (用户名) <密码> - 登录账户 (首次登录不需要用户名！)",
+			"value": "/login (username) <password> - login account"
 		},
 		{
 			"key": "{str:name} 进行榨汁，获得了 {int:pvars} 经验",

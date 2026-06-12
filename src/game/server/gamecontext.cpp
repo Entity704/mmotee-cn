@@ -788,6 +788,17 @@ void CGameContext::SendBroadcast_Localization_P(int To, int Priority, int LifeSp
 
 void CGameContext::SendChat(int ChatterClientID, int Team, const char *pText)
 {
+	char aBuf[256];
+	if (ChatterClientID >= 0 && ChatterClientID < MAX_CLIENTS)
+	{
+		str_format(aBuf, sizeof(aBuf), "%d:%d:%s: %s", ChatterClientID, Team, Server()->ClientName(ChatterClientID), pText);
+	}
+	else
+	{
+		str_format(aBuf, sizeof(aBuf), "*** %s", pText);
+	}
+	Console()->Print(IConsole::OUTPUT_LEVEL_ADDINFO, Team != CHAT_ALL ? "teamchat" : "chat", aBuf);
+
 	if (Team == CGameContext::CHAT_ALL)
 	{
 		CNetMsg_Sv_Chat Msg;
@@ -1349,6 +1360,10 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 			}
 			else if (pMsg->m_pMessage[0] == '/')
 				pPlayer->m_pChatCmd->ChatCmd(pMsg);
+			else if (!Server()->IsClientLogged(ClientID)) {
+				SendChatTarget_Localization(ClientID, CHATCATEGORY_DEFAULT, _("# 请登录后再发言！使用 /cmdlist 查看帮助"));
+				return;
+			}
 			else
 				SendChat(ClientID, Team, pMsg->m_pMessage);
 		}
@@ -1444,7 +1459,7 @@ void CGameContext::OnMessage(int MsgID, CUnpacker *pUnpacker, int ClientID)
 					Buffer.append("\n\n");
 					Server()->Localization()->Format_L(Buffer, pLanguage, _("/register <用户名> <密码> - 创建一个新的账户"), NULL);
 					Buffer.append("\n");
-					Server()->Localization()->Format_L(Buffer, pLanguage, _("/login <用户名> <密码> - 登录账户"), NULL);
+					Server()->Localization()->Format_L(Buffer, pLanguage, _("/login (用户名) <密码> - 登录账户 (首次登录不需要用户名！)"), NULL);
 					Buffer.append("\n");
 					// 鬼知道这个玩意是谁写的,翻译之前居然不检查一下
 					// Server()->Localization()->Format_L(Buffer, pLanguage, _("/logout - 注销该账户"), NULL);
