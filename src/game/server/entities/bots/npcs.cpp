@@ -145,7 +145,7 @@ void CNpcSold::TickBotAI()
 	}
 	else if(Dists < 400.0f)
 	{
-		for (int i=0; i<g_Config.m_SvMaxClients; i++)
+		for (int i=0; i<MAX_CLIENTS; i++)
 		{
 			CPlayer *pPlayer = GameServer()->m_apPlayers[i];
 			if (!pPlayer || !pPlayer->GetCharacter() || (!pPlayer->m_Search && !pPlayer->IsBot()) || (pPlayer->IsBot() && pPlayer->GetBotType() == BOT_GUARD))
@@ -183,7 +183,7 @@ void CNpcSold::TickBotAI()
 			}
 		}	
 		
-		for (int i=0; i<g_Config.m_SvMaxClients-MAX_BOTS; i++)
+		for (int i=0; i<g_Config.m_SvMaxPlayers; i++)
 		{
 			CPlayer *pPlayer = GameServer()->m_apPlayers[i];
 			if (!pPlayer || !pPlayer->GetCharacter() || pPlayer->m_Search || (pPlayer->IsBot() && pPlayer->GetBotType() == BOT_GUARD))

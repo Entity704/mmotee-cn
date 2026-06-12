@@ -31,6 +31,21 @@ static const unsigned char SERVERBROWSE_INFO[] = {255, 255, 255, 255, 'i', 'n', 
 static const unsigned char SERVERBROWSE_GETINFO64[] = {255, 255, 255, 255, 'f', 's', 't', 'd'};
 static const unsigned char SERVERBROWSE_INFO64[] = {255, 255, 255, 255, 'd', 't', 's', 'f'};
 
+static const unsigned char SERVERBROWSE_GETINFO_64_LEGACY[] = {255, 255, 255, 255, 'f', 's', 't', 'd'};
+static const unsigned char SERVERBROWSE_INFO_64_LEGACY[] = {255, 255, 255, 255, 'd', 't', 's', 'f'};
+
+static const unsigned char SERVERBROWSE_INFO_EXTENDED[] = {255, 255, 255, 255, 'i', 'e', 'x', 't'};
+static const unsigned char SERVERBROWSE_INFO_EXTENDED_MORE[] = {255, 255, 255, 255, 'i', 'e', 'x', '+'};
+
+enum
+{
+	SERVERINFO_VANILLA=0,
+	SERVERINFO_64_LEGACY,
+	SERVERINFO_EXTENDED,
+	SERVERINFO_EXTENDED_MORE,
+	SERVERINFO_INGAME,
+};
+
 static const unsigned char SERVERBROWSE_FWCHECK[] = {255, 255, 255, 255, 'f', 'w', '?', '?'};
 static const unsigned char SERVERBROWSE_FWRESPONSE[] = {255, 255, 255, 255, 'f', 'w', '!', '!'};
 static const unsigned char SERVERBROWSE_FWOK[] = {255, 255, 255, 255, 'f', 'w', 'o', 'k'};

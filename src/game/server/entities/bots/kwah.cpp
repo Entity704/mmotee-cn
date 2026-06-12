@@ -144,7 +144,7 @@ void CKwah::TickBotAI()
 	}
 	else if(Dists < 400.0f)
 	{
-		for (int i=0; i<g_Config.m_SvMaxClients; i++)
+		for (int i=0; i<MAX_CLIENTS; i++)
 		{
 			CPlayer *pPlayer = GameServer()->m_apPlayers[i];
 			if (!pPlayer || !pPlayer->GetCharacter() || pPlayer->IsBot())

@@ -39,7 +39,7 @@ CPlayer::CPlayer(CGameContext *pGameServer, int ClientID, int Team)
 	m_LastActionTick = Server()->Tick();
 	m_SpecTick = Server()->Tick();
 
-	m_Bot = (ClientID >= g_Config.m_SvMaxClients - MAX_BOTS);
+	m_Bot = (ClientID >= MAX_PLAYERS);
 	m_BotType = m_BotSubType = m_SelectItem = m_SelectArmor = m_SelectQuest = m_SelectSubQuest = -1;
 	mem_zero(&m_BotAccData, sizeof(m_BotAccData));
 	mem_zero(&m_BotAccUpgrade, sizeof(m_BotAccUpgrade));

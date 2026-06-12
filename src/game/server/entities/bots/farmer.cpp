@@ -103,7 +103,7 @@ void CNpcFarmer::TickBotAI()
 		GameServer()->SendEmoticon(m_pPlayer->GetCID(), 2);
     }
     
-	for (int i=0; i<g_Config.m_SvMaxClients-MAX_BOTS; i++)
+	for (int i=0; i<g_Config.m_SvMaxPlayers; i++)
 	{
 		CPlayer *pPlayer = GameServer()->m_apPlayers[i];
 		if (!pPlayer || !pPlayer->GetCharacter() || (pPlayer->IsBot() && pPlayer->GetBotType() == BOT_GUARD))

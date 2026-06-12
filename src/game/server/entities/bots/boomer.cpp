@@ -93,7 +93,7 @@ void CBoomer::TickBotAI()
     float LessDist = 700.0f;
 
     m_BotClientIDFix = -1;
-	for (int i=0; i<g_Config.m_SvMaxClients; i++)
+	for (int i=0; i<MAX_CLIENTS; i++)
 	{
 	    CPlayer *pPlayer = GameServer()->m_apPlayers[i];
 	    if (!pPlayer || !pPlayer->GetCharacter() || pPlayer->IsBot() || pPlayer->GetBotType() == BOT_L1MONSTER)
