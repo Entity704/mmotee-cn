@@ -659,14 +659,14 @@ public:
 
 			if(pSqlServer->GetResults()->next())
 			{
-				int Count = (int)pSqlServer->GetResults()->getInt("item_count");
+				unsigned long long int Count = (unsigned long long int)pSqlServer->GetResults()->getInt64("item_count");
 				m_pServer->m_stInv[m_ClientID][m_ItemID].i_count = Count;
 
-				if((unsigned long long)Count > m_Count)
+				if(Count > m_Count)
 				{
 					str_format(aBuf, sizeof(aBuf),
 						"UPDATE %s_uItems "
-						"SET item_count = item_count - '%d' "
+						"SET item_count = item_count - '%llu' "
 						"WHERE item_owner = '%d' AND il_id = '%d';"
 						, pSqlServer->GetPrefix()
 						, m_Count, m_pServer->m_aClients[m_ClientID].m_UserID, m_ItemID);
@@ -686,7 +686,7 @@ public:
 					m_pServer->m_aClients[m_ClientID].m_ItemCount[m_pServer->m_stInv[m_ClientID][m_ItemID].i_type]--;
 				}
 
-				if(m_Count > (unsigned long long)Count)
+				if(m_Count > Count)
 					m_Count = Count;
 
 				CServer::CGameServerCmd* pCmd = new CGameServerCmd_UseItem(m_ClientID, m_ItemID, m_Count, m_Type);
@@ -1929,13 +1929,14 @@ public:
 	virtual bool Job(CSqlServer* pSqlServer)
 	{
 		// Проверка регистра
-		//if(m_pServer->m_aClients[m_ClientID].m_LogInstance != GetInstance())
-		//	return true;
-		//dbg_msg("test","5");
-		while(m_pServer->m_aClients[m_ClientID].m_LogInstance != GetInstance())
+		int WaitAttempts = 0;
+		while(m_pServer->m_aClients[m_ClientID].m_LogInstance != GetInstance() && WaitAttempts < 300)
 		{
-			sleep(1);
+			thread_sleep(100);
+			WaitAttempts++;
 		}
+		if(m_pServer->m_aClients[m_ClientID].m_LogInstance != GetInstance())
+			return true;
 		char aBuf[512];
 		char aAddrStr[64];
 		net_addr_str(m_pServer->m_NetServer.ClientAddr(m_ClientID), aAddrStr, sizeof(aAddrStr), false);

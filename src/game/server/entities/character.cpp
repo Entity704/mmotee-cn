@@ -164,6 +164,8 @@ bool CCharacter::Spawn(CPlayer *pPlayer, vec2 Pos)
 	GameServer()->m_World.InsertEntity(this);
 	m_Alive = true;
 
+	m_SnapProjectActive = false;
+
 	GameServer()->m_pController->OnCharacterSpawn(this);
 
 	if(!m_pPlayer->IsBot())
@@ -341,21 +343,25 @@ void CCharacter::HandleWeaponSwitch()
 
 	if(Next < 128) // make sure we only try sane stuff
 	{
-		while(Next) // Next Weapon selection
+		int SafetyCounter = 0;
+		while(Next && SafetyCounter < 128) // Next Weapon selection
 		{
 			WantedWeapon = (WantedWeapon+1)%NUM_WEAPONS;
 			if(m_aWeapons[WantedWeapon].m_Got)
 				Next--;
+			SafetyCounter++;
 		}
 	}
 
 	if(Prev < 128) // make sure we only try sane stuff
 	{
-		while(Prev) // Prev Weapon selection
+		int SafetyCounter = 0;
+		while(Prev && SafetyCounter < 128) // Prev Weapon selection
 		{
 			WantedWeapon = (WantedWeapon-1)<0?NUM_WEAPONS-1:WantedWeapon-1;
 			if(m_aWeapons[WantedWeapon].m_Got)
 				Prev--;
+			SafetyCounter++;
 		}
 	}
 
@@ -1671,8 +1677,8 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 {
 	m_Recoil += Force;
 
-	CPlayer *pFrom = GameServer()->m_apPlayers[From];
-	CCharacter *pChr = GameServer()->m_apPlayers[From]->GetCharacter();
+	CPlayer *pFrom = (From >= 0 && From < MAX_CLIENTS) ? GameServer()->m_apPlayers[From] : nullptr;
+	CCharacter *pChr = pFrom ? pFrom->GetCharacter() : nullptr;
 
 	if(pFrom && pChr)
 	{
@@ -1796,8 +1802,8 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 
 		if(m_pPlayer->AccData()->m_Class == PLAYERCLASS_HEALER && m_pPlayer->AccUpgrade()->m_Pasive2)
 		{
-			auto RandProc = (float)(100-m_pPlayer->AccUpgrade()->m_Pasive2*2);
-			if(random_prob(1.0f/RandProc))
+		auto RandProc = (float)max(1, 100-m_pPlayer->AccUpgrade()->m_Pasive2*2);
+		if(random_prob(1.0f/RandProc))
 			{
 				if(!Server()->GetItemSettings(m_pPlayer->GetCID(), SCHAT))
 					GameServer()->SendChatTarget_Localization(m_pPlayer->GetCID(), CHATCATEGORY_DEFAULT, _("被动技能不受伤害"), NULL);
@@ -1805,7 +1811,7 @@ bool CCharacter::TakeDamage(vec2 Force, int Dmg, int From, int Weapon, int Mode)
 			}
 		}
 
-		auto getcount = (float)(pFrom->AccData()->m_Class == PLAYERCLASS_ASSASSIN ? 15-pFrom->AccUpgrade()->m_HammerRange : 15.0f);
+		auto getcount = (float)(pFrom->AccData()->m_Class == PLAYERCLASS_ASSASSIN ? max(1, 15-pFrom->AccUpgrade()->m_HammerRange) : 15);
 		if(random_prob(1.0f/getcount))
 		{
 			int CritDamage = Dmg+pFrom->AccUpgrade()->m_Damage*2+random_int(0, 50);
@@ -2475,17 +2481,22 @@ void CCharacter::ClassSpawnAttributes()
 			m_pPlayer->m_TeeInfos.m_ColorBody = 16711495;
 		}
 
-		if(Server()->GetItemCount(m_pPlayer->GetCID(), SPECSNAPDRAW))
-			new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 2, WEAPON_SHOTGUN, true);
+		if(!m_SnapProjectActive)
+		{
+			if(Server()->GetItemCount(m_pPlayer->GetCID(), SPECSNAPDRAW))
+				new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 2, WEAPON_SHOTGUN, true);
 
-		if(Server()->GetItemSettings(m_pPlayer->GetCID(), RAREEVENTHAMMER))
-			new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 3, 4, true);
+			if(Server()->GetItemSettings(m_pPlayer->GetCID(), RAREEVENTHAMMER))
+				new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 3, 4, true);
 
-		if(Server()->GetItemCount(m_pPlayer->GetCID(), SNAPDAMAGE))
-			new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 3, WEAPON_GRENADE, true);
+			if(Server()->GetItemCount(m_pPlayer->GetCID(), SNAPDAMAGE))
+				new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 3, WEAPON_GRENADE, true);
 
-		if(Server()->GetItemCount(m_pPlayer->GetCID(), SNAPHANDLE))
-			new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 4, 1, true);
+			if(Server()->GetItemCount(m_pPlayer->GetCID(), SNAPHANDLE))
+				new CSnapFullProject(GameWorld(), m_Pos, m_pPlayer->GetCID(), 4, 1, true);
+
+			m_SnapProjectActive = true;
+		}
 	}
 
 	Server()->SetMaxAmmo(m_pPlayer->GetCID(), INFWEAPON_HAMMER, 10000);

@@ -647,9 +647,9 @@ void CPlayer::MoneyAdd(int Size, bool ClanBonus, bool MoneyDouble)
 	if (MoneyDouble)
 	{
 		if (Server()->GetItemSettings(m_ClientID, X2MONEYEXPVIP))
-			GetMoney = (int)GetMoney * (Server()->GetItemCount(m_ClientID, X2MONEYEXPVIP) * 2);
+			GetMoney = (unsigned long int)GetMoney * ((unsigned long int)Server()->GetItemCount(m_ClientID, X2MONEYEXPVIP) * 2);
 		else if (MoneyDouble && (m_MoneyAdd))
-			GetMoney = (int)(GetMoney * 2);
+			GetMoney = (unsigned long int)(GetMoney * 2);
 	}
 
 	if (Size >= 10000)
@@ -685,7 +685,7 @@ void CPlayer::ExpAdd(unsigned long int Size, bool Bonus)
 	if (Bonus && m_ExperienceAdd)
 		GetExp = GetExp * 2;
 	if (Server()->GetItemSettings(m_ClientID, X2MONEYEXPVIP))
-		GetExp = GetExp * ((Server()->GetItemCount(m_ClientID, X2MONEYEXPVIP)) + 1);
+		GetExp = GetExp * ((unsigned long int)Server()->GetItemCount(m_ClientID, X2MONEYEXPVIP) + 1);
 
 	if (Server()->GetClanID(m_ClientID) &&
 		Server()->GetClan(Clan::Exp, Server()->GetClanID(m_ClientID)) >= Server()->GetClan(Clan::Level, Server()->GetClanID(m_ClientID)) * GetNeedForUpgClan(Clan::Level))

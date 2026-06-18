@@ -233,6 +233,23 @@ CServer::CServer()
 	m_RconClientID = IServer::RCON_CID_SERV;
 	m_RconAuthLevel = AUTHED_ADMIN;
 
+	m_pConsole = 0;
+	m_pStorage = 0;
+	m_PrintCBIndex = 0;
+	m_GameStartTime = 0;
+	m_Lastheartbeat = 0;
+	m_TimeShiftUnit = 0;
+	m_NumGameServer = 0;
+
+	for (int i = 0; i < COUNT_CLANHOUSE; i++)
+	{
+		m_HouseClanID[i] = 0;
+		m_HouseOldClanID[i] = 0;
+	}
+
+	for (int i = 0; i < 3; i++)
+		m_Materials[i] = 0;
+
 	for (int i = 0; i < MAX_SQLSERVERS; i++)
 	{
 		m_apSqlReadServers[i] = 0;
@@ -310,7 +327,7 @@ void CServer::SetClientName(int ClientID, const char *pName)
 		for(int i = 1;; i++)
 		{
 			char aNameTry[MAX_NAME_LENGTH];
-			str_format(aNameTry, sizeof(aCleanName), "(%d)%s", i, aCleanName);
+			str_format(aNameTry, sizeof(aNameTry), "(%d)%s", i, aCleanName);
 			if(TrySetClientName(ClientID, aNameTry) == 0)
 				break;
 		}
@@ -697,6 +714,9 @@ int CServer::DelClientCallback(int ClientID, int Type, const char *pReason, void
 {
 	CServer *pThis = (CServer *)pUser;
 
+	// 首先设置 LogInstance=-1 防止 SQL 线程在数据清理期间访问
+	pThis->m_aClients[ClientID].m_LogInstance = -1;
+
 	// notify the mod about the drop
 	if (pThis->m_aClients[ClientID].m_State >= CClient::STATE_READY || pThis->GetClientChangeMap(ClientID))
 	{
@@ -764,7 +784,6 @@ int CServer::DelClientCallback(int ClientID, int Type, const char *pReason, void
 		pThis->m_stInv[ClientID][i].i_id = 0;
 	}
 
-	pThis->m_aClients[ClientID].m_LogInstance = -1;
 	pThis->m_aClients[ClientID].m_Snapshots.PurgeAll();
 	pThis->m_aClients[ClientID].m_MapID = DEFAULT_MAP_ID;
 	pThis->m_aClients[ClientID].m_OldMapID = DEFAULT_MAP_ID;
@@ -1118,7 +1137,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 					SendRconLine(ClientID, "? Fuck off.");
 
 					char aAddrStr[64];
-					char aBuf[128];
+					char aBuf[256];
 					net_addr_str(m_NetServer.ClientAddr(ClientID), aAddrStr, sizeof(aAddrStr), false);
 					str_format(aBuf, sizeof(aBuf), "!警告! 陷阱被触发! 用户ID: %d, 游戏名:%s, IP:%s", m_aClients[ClientID].m_UserID, ClientName(ClientID), aAddrStr);
 					LogWarning(aBuf);
@@ -1128,7 +1147,7 @@ void CServer::ProcessClientPacket(CNetChunk *pPacket)
 				else if(g_Config.m_SvRconMaxTries)
 				{
 					m_aClients[ClientID].m_AuthTries++;
-					char aBuf[128];
+					char aBuf[256];
 					str_format(aBuf, sizeof(aBuf), "Wrong password %d/%d.", m_aClients[ClientID].m_AuthTries, g_Config.m_SvRconMaxTries);
 					SendRconLine(ClientID, aBuf);
 
@@ -1194,7 +1213,7 @@ void CServer::SendServerInfo(const NETADDR *pAddr, int Token, int Type, bool Sen
 
 	// count the players
 	int PlayerCount = 0, ClientCount = 0;
-	for(int i = 0; i < MAX_PLAYERS; i++)
+	for(int i = 0; i < VANILLA_MAX_CLIENTS; i++) // TODO: fix it
 	{
 		if(m_aClients[i].m_State != CClient::STATE_EMPTY)
 		{
@@ -1237,7 +1256,8 @@ void CServer::SendServerInfo(const NETADDR *pAddr, int Token, int Type, bool Sen
 
 	p.AddString(GameServer()->Version(), 32);
 	const char *pMapName = GetMapName();
-	int MaxClients = m_NetServer.MaxClients();
+	// TODO: Fix it
+	int MaxClients = VANILLA_MAX_CLIENTS; // m_NetServer.MaxClients();
 
 	if(Type != SERVERINFO_VANILLA)
 	{
@@ -1245,16 +1265,9 @@ void CServer::SendServerInfo(const NETADDR *pAddr, int Token, int Type, bool Sen
 	}
 	else
 	{
-		if(MAX_PLAYERS <= VANILLA_MAX_CLIENTS)
-		{
-			p.AddString(g_Config.m_SvName, 64);
-		}
-		else
-		{
-			char aNameBuf[64];
-			str_format(aNameBuf, sizeof(aNameBuf), "%s [%d/%d]", g_Config.m_SvName, ClientCount, MaxClients);
-			p.AddString(aNameBuf, 64);
-		}
+		char aNameBuf[64];
+		str_format(aNameBuf, sizeof(aNameBuf), "%s [%d/%d]", g_Config.m_SvName, ClientCount, MaxClients);
+		p.AddString(aNameBuf, 64);
 	}
 	p.AddString(pMapName, 32);
 
@@ -1853,7 +1866,7 @@ bool CServer::ConKick(IConsole::IResult *pResult, void *pUser)
 {
 	CServer* pThis = (CServer *)pUser;
 
-	char aBuf[128];
+	char aBuf[256];
 	const char *pStr = pResult->GetString(0);
 	const char *pReason = pResult->NumArguments()>1 ? pResult->GetString(1) : "No reason given";
 	str_format(aBuf, sizeof(aBuf), "Kicked (%s)", pReason);
@@ -2063,7 +2076,7 @@ bool CServer::ConAddSqlServer(IConsole::IResult *pResult, void *pUserData)
 			//apSqlServers[i] = new CSqlServer(pResult->GetString(1), pResult->GetString(2), pResult->GetString(3), pResult->GetString(4), pResult->GetString(5), pResult->GetInteger(6), ReadOnly, SetUpDb);
 			apSqlServers[i] = new CSqlServer(pResult->GetString(1), pResult->GetString(2), pResult->GetString(3), pResult->GetString(4), pResult->GetString(5), pResult->GetInteger(6), ReadOnly);
 
-			char aBuf[512];
+			char aBuf[1024];
 			str_format(aBuf, sizeof(aBuf), "Added new Sql%sServer: %d: DB: '%s' Prefix: '%s' User: '%s' IP: '%s' Port: %d", ReadOnly ? "Read" : "Write", i, apSqlServers[i]->GetDatabase(), apSqlServers[i]->GetPrefix(), apSqlServers[i]->GetUser(), apSqlServers[i]->GetIP(), apSqlServers[i]->GetPort());
 			pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 			return true;
@@ -2094,8 +2107,8 @@ bool CServer::ConDumpSqlServers(IConsole::IResult *pResult, void *pUserData)
 	for (int i = 0; i < MAX_SQLSERVERS; i++)
 		if (apSqlServers[i])
 		{
-			char aBuf[512];
-			str_format(aBuf, sizeof(aBuf), "SQL-%s %d: DB: '%s' Prefix: '%s' User: '%s' Pass: '%s' IP: '%s' Port: %d", ReadOnly ? "Read" : "Write", i, apSqlServers[i]->GetDatabase(), apSqlServers[i]->GetPrefix(), apSqlServers[i]->GetUser(), apSqlServers[i]->GetPass(), apSqlServers[i]->GetIP(), apSqlServers[i]->GetPort());
+			char aBuf[1024];
+			str_format(aBuf, sizeof(aBuf), "SQL-%s %d: DB: '%s' Prefix: '%s' User: '%s' Pass: '***' IP: '%s' Port: %d", ReadOnly ? "Read" : "Write", i, apSqlServers[i]->GetDatabase(), apSqlServers[i]->GetPrefix(), apSqlServers[i]->GetUser(), apSqlServers[i]->GetIP(), apSqlServers[i]->GetPort());
 			pSelf->Console()->Print(IConsole::OUTPUT_LEVEL_STANDARD, "server", aBuf);
 		}
 
@@ -2493,10 +2506,14 @@ int CServer::GetItemCountType(int ClientID, int Type)
 }
 int CServer::GetItemEnchant(int ClientID, int ItemID)
 {
+	if(ItemID < 0 || ItemID >= MAX_ITEM)
+		return 0;
 	return m_stInv[ClientID][ItemID].i_enchant;
 }
 void CServer::SetItemEnchant(int ClientID, int ItemID, int Price)
 {
+	if(ItemID < 0 || ItemID >= MAX_ITEM)
+		return;
 	m_stInv[ClientID][ItemID].i_enchant = Price;
 	UpdateItemSettings(ItemID, ClientID);
 }
@@ -2514,7 +2531,7 @@ const char *CServer::GetItemDesc_en(int ItemID)
 }
 unsigned long long int CServer::GetItemCount(int ClientID, int ItemID)
 {
-	if(ClientID >= MAX_PLAYERS)
+	if(ClientID < 0 || ClientID >= MAX_PLAYERS || ItemID < 0 || ItemID >= MAX_ITEM)
 		return 0;
 
 	return m_stInv[ClientID][ItemID].i_count;
@@ -2663,7 +2680,7 @@ void CServer::Login(int ClientID, const char* pUsername, const char* pPassword)
 
 	char aHash[64]; //Result
 	mem_zero(aHash, sizeof(aHash));
-	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash);
+	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash, (int)sizeof(aHash));
 
 	CSqlJob* pJob = new CSqlJob_Server_Login(this, ClientID, pUsername, aHash);
 	m_aClients[ClientID].m_LogInstance = pJob->GetInstance();
@@ -2676,7 +2693,7 @@ inline void CServer::Register(int ClientID, const char* pUsername, const char* p
 		return;
 
 	char aHash[64];
-	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash);
+	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash, (int)sizeof(aHash));
 
 	CSqlJob* pJob = new CSqlJob_Server_Register(this, ClientID, pUsername, aHash, pEmail);
 	m_aClients[ClientID].m_LogInstance = pJob->GetInstance();
@@ -2687,7 +2704,7 @@ inline void CServer::ChangePassword_Admin(int ClientID, const char* pNick, const
 {
 
 	char aHash[64];
-	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash);
+	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash, (int)sizeof(aHash));
 
 	CSqlJob* pJob = new CSqlJob_Server_ChangePassword_Admin(this,ClientID, pNick, aHash);
 	pJob->Start();
@@ -2696,7 +2713,7 @@ inline void CServer::ChangePassword_Admin(int ClientID, const char* pNick, const
 inline void CServer::ChangePassword(int ClientID, const char* pPassword) // 更改密码
 {
 	char aHash[64];
-	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash);
+	Crypt(pPassword, (const unsigned char*) "d9", 1, 16, aHash, (int)sizeof(aHash));
 
 	CSqlJob* pJob = new CSqlJob_Server_ChangePassword(this, ClientID, aHash);
 	m_aClients[ClientID].m_LogInstance = pJob->GetInstance();
@@ -2731,6 +2748,8 @@ void CServer::RemItem(int ClientID, int ItemID, unsigned long long int Count, in
 
 int CServer::GetItemType(int ClientID, int ItemID)
 {
+	if(ItemID < 0 || ItemID >= MAX_ITEM)
+		return 0;
 	return m_stInv[ClientID][ItemID].i_type;
 }
 int CServer::GetItemSettings(int ClientID, int ItemID)
@@ -2801,6 +2820,7 @@ void CServer::GetItem(int ItemID, int ClientID, int Count, int Settings, int Enc
 }
 void CServer::GiveItem(int ClientID, int ItemID, int Count, int Settings, int Enchant)
 {
+	Count = clamp(Count, 1, MAX_COUNT);
 	GetItem(ItemID, ClientID, Count, Settings, Enchant);
 }
 
