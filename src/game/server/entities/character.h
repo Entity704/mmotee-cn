@@ -121,6 +121,8 @@ private:
 
 	bool m_AntiPVP;
 
+	bool m_SnapProjectActive;
+
 	int m_ReloadOther;
 	int m_ReloadTimer;
 	int m_AttackTick;

@@ -19,7 +19,8 @@ IGameController::IGameController(class CGameContext *pGameServer)
 	m_SuddenDeath = 0;
 	m_RoundStartTick = Server()->Tick();
 	m_GameFlags = 22;
-	m_aMapWish[0] = 0;
+	m_RoundCount = 0;
+	mem_zero(m_aMapWish, sizeof(m_aMapWish));
 
 	m_UnbalancedTick = -1;
 }

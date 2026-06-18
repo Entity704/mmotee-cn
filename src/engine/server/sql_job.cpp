@@ -14,9 +14,17 @@ void CSqlJob::StartReadOnly()
 
 void CSqlJob::Start(bool ReadOnly)
 {
-	m_ReadOnly = ReadOnly;	
-	auto ExecThread = std::thread(CSqlJob::Exec, this);
-	ExecThread.detach();
+	m_ReadOnly = ReadOnly;
+	try
+	{
+		auto ExecThread = std::thread(CSqlJob::Exec, this);
+		ExecThread.detach();
+	}
+	catch(const std::system_error& e)
+	{
+		dbg_msg("sql", "failed to start sql job thread: %s", e.what());
+		delete this;
+	}
 }
 
 void CSqlJob::AddQueuedJob(CSqlJob* pJob)
